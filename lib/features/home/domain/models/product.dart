@@ -4,7 +4,9 @@ class Product {
   final String description;
   final double price;
   final String imagePath;
-  final List<int> colors; // List of hex values
+  final bool is3d;
+  final String? modelPath;
+ 
 
   Product({
     required this.id,
@@ -12,6 +14,7 @@ class Product {
     required this.description,
     required this.price,
     required this.imagePath,
-    required this.colors,
+    required this.is3d,
+    this.modelPath ,
   });
 }

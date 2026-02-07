@@ -1,19 +1,39 @@
+import 'package:aurawear/core/common_widgets/model_viewer.dart';
+import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:aurawear/features/home/presentation/pages/home_page.dart';
+import 'package:aurawear/features/home/presentation/pages/product_details_page.dart';
 import 'package:aurawear/features/splash/presentation/view/splash_screen.dart';
+import 'package:aurawear/router/app_routes.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/splash',
+  initialLocation: AppRoutes.homePath,
   routes: [
     GoRoute(
-      path: '/splash',
-      name: 'splash',
+      path: AppRoutes.splashPath,
+      name: AppRoutes.splashName,
       builder: (context, state) => const SplashScreen(),
     ),
     GoRoute(
-      path: '/home',
-      name: 'home',
+      path: AppRoutes.homePath,
+      name: AppRoutes.homeName,
       builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: AppRoutes.productDetailsPath,
+      name: AppRoutes.productDetailsName,
+      builder: (context, state) {
+        final product = state.extra as Product;
+        return ProductDetailsPage(product: product);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.threeDViewPath,
+      name: AppRoutes.threeDViewName,
+      builder: (context, state) {
+        final product = state.extra as Product;
+        return ModelViewerWidget(product: product);
+      },
     ),
   ],
 );

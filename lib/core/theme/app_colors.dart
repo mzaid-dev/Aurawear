@@ -17,11 +17,12 @@ class AppColors {
   static const Color mutedRoseText = Color(0xFFF89890);
 
   // Home Screen Colors
-  static const Color homeBg = Color(0xFFFAF1EF);
-  static const Color chipInactive = Color(0xFFFBE8E5);
+  static const Color homeBg = Color(0xFFFDBDB5);
+  static const Color chipInactive = Colors.white;
   static const Color chipActive = Colors.black;
-  static const Color searchIcon = Color(0xFFB4A19F);
+  static const Color searchIcon = Colors.black;
   static const Color iconBg = Colors.white;
+  static const Color product_card_bg = Color(0xFFF2D0CB);
 
   // Background Colors
   static const Color background = Color(0xFFFEE1DD);

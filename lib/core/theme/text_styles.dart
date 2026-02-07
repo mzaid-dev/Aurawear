@@ -159,4 +159,17 @@ class AppTextStyles {
     color: AppColors.textSecondary,
     letterSpacing: 0.5,
   );
+  static const TextStyle categoryChip = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle searchHint = TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: AppColors.textSecondary,
+  );
 }

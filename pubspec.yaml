@@ -37,6 +37,7 @@ dependencies:
   device_frame: ^1.4.0
   liquid_swipe: ^3.1.0
   glow_container: ^1.0.1
+  model_viewer_plus: ^1.10.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,8 @@ flutter:
     - assets/images/products/
     - assets/images/hero/
     - assets/icons/
+    - assets/3d_models/
+    - assets/avator/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
