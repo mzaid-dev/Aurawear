@@ -57,7 +57,7 @@ class Screen3 extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 7.9),
                         Icon(
                           Icons.arrow_forward_rounded,
                           color: Colors.white,
