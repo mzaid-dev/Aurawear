@@ -1,11 +1,11 @@
+import 'dart:async';
+import 'dart:math' as math;
+import 'package:aurawear/core/constants/app_assets.dart';
 import 'package:aurawear/core/theme/app_colors.dart';
-import 'package:aurawear/features/splash/presentation/pages/screen1.dart';
-import 'package:aurawear/features/splash/presentation/pages/screen2.dart';
-import 'package:aurawear/features/splash/presentation/pages/screen3.dart';
+import 'package:aurawear/router/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:glow_container/glow_container.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
-import 'package:liquid_swipe/liquid_swipe.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,136 +14,392 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-  late LiquidController _liquidController;
-  final ValueNotifier<int> _currentPage = ValueNotifier(0);
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
+  String _phase = 'logo';
+  double _progress = 0;
+  late Timer _phaseTimer1;
+  late Timer _phaseTimer2;
+  late Timer _progressTimer;
+
+  late AnimationController _scanlineController;
 
   @override
   void initState() {
-    _liquidController = LiquidController();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FlutterNativeSplash.remove();
+    });
+
+    _scanlineController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+
+    _phaseTimer1 = Timer(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _phase = 'text');
+    });
+
+    _phaseTimer2 = Timer(const Duration(milliseconds: 1400), () {
+      if (mounted) setState(() => _phase = 'loading');
+    });
+
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (!mounted) return;
+      if (_phase == 'loading') {
+        setState(() {
+          if (_progress >= 100) {
+            _progress = 100;
+            timer.cancel();
+            _checkAndExit();
+          } else {
+            // Simulated progress logic without AuthBloc
+            _progress += math.Random().nextDouble() * 10;
+            if (_progress > 100) _progress = 100;
+          }
+        });
+      }
+    });
+  }
+
+  void _checkAndExit() {
+    if (_progress >= 100) {
+      setState(() => _phase = 'exit');
+
+      Future.delayed(const Duration(milliseconds: 600), () {
+        if (mounted) {
+          context.goNamed(AppRoutes.onboardingName);
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
-    _currentPage.dispose();
+    _phaseTimer1.cancel();
+    _phaseTimer2.cancel();
+    _progressTimer.cancel();
+    _scanlineController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          LiquidSwipe(
-            pages: const [Screen1(), Screen2(), Screen3()],
-            liquidController: _liquidController,
-            waveType: WaveType.liquidReveal,
-            onPageChangeCallback: (index) {
-              _currentPage.value = index;
-            },
-          ),
+    return Scaffold(backgroundColor: Colors.black, body: _buildBody());
+  }
 
-          // Professional Arrival Tag
-          Positioned(
-            top: 56,
-            left: 22,
-            child: GlowContainer(
-              glowRadius: 8,
-              gradientColors: [AppColors.primaryRose, Colors.white],
-              rotationDuration: const Duration(seconds: 3),
-              glowLocation: GlowLocation.both,
-              containerOptions: ContainerOptions(
-                width: 140,
-                height: 38,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                borderRadius: 25,
-                backgroundColor: Colors.white.withOpacity(0.9),
-                borderSide: BorderSide(
-                  width: 0.5,
-                  color: Colors.black.withOpacity(0.05),
+  Widget _buildBody() {
+    final bool isExit = _phase == 'exit';
+
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 800),
+      opacity: isExit ? 0.0 : 1.0,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 800),
+        scale: isExit ? 1.1 : 1.0,
+        curve: Curves.easeOutQuart,
+        child: Stack(
+          children: [
+            // Background Glow
+            Center(
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryRose.withValues(alpha: 0.12),
+                      blurRadius: 100,
+                      spreadRadius: 50,
+                    ),
+                  ],
                 ),
               ),
-              transitionDuration: const Duration(milliseconds: 250),
-              showAnimatedBorder: true,
-              child: const Center(
-                child: Text(
-                  "20 new arrivals 🔥",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
+            ),
+
+            // Scanline animation
+            AnimatedBuilder(
+              animation: _scanlineController,
+              builder: (context, child) {
+                return Positioned(
+                  top:
+                      MediaQuery.sizeOf(context).height *
+                      _scanlineController.value,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 1,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          AppColors.primaryRose.withValues(alpha: 0.15),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo Container
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 1000),
+                    curve: const Cubic(0.2, 0.8, 0.2, 1.0),
+                    width: 130,
+                    height: 130,
+                    transform: Matrix4.translationValues(
+                      0,
+                      _phase == 'logo' ? 40 : 0,
+                      0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0A0A0A),
+                      borderRadius: BorderRadius.circular(36),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.08),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryRose.withValues(alpha: 0.15),
+                          blurRadius: 40,
+                          offset: const Offset(0, 15),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(36),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const _PulseGlow(),
+                          Opacity(
+                            opacity: _phase == 'logo' ? 0.0 : 1.0,
+                            child: Image.asset(
+                              AppAssets.appLogo,
+                              width: 80,
+                              height: 80,
+                              errorBuilder: (c, e, s) => const Icon(
+                                Icons.auto_awesome_rounded,
+                                size: 60,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+
+                  // Title & Tagline
+                  ClipRect(
+                    child: _AnimatedTitle(
+                      visible: _phase != 'logo',
+                      title: "Aurawear",
+                      tagline: "LUXURY REIMAGINED",
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Progress Section
+            Positioned(
+              bottom: 110,
+              left: 0,
+              right: 0,
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 700),
+                opacity: _phase == 'loading' || _phase == 'exit' ? 1.0 : 0.0,
+                child: Center(
+                  child: SizedBox(
+                    width: 260,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "INITIALIZING SYSTEMS",
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                fontSize: 9,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                            Text(
+                              "${_progress.toInt()}%",
+                              style: const TextStyle(
+                                color: AppColors.primaryRose,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Custom Linear Progress
+                        Container(
+                          height: 3,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: FractionallySizedBox(
+                            alignment: Alignment.centerLeft,
+                            widthFactor: _progress / 100,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [AppColors.primaryRose, Colors.white],
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryRose.withValues(
+                                      alpha: 0.4,
+                                    ),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          "AURA PROTOCOL V1.0.1",
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.1),
+                            fontSize: 7,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 3,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-
-          // Skip Button
-          Positioned(
-            top: 56,
-            right: 22,
-            child: TextButton(
-              onPressed: () => context.goNamed('home'),
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.2),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
-                ),
-              ),
-              child: const Text(
-                "SKIP",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ),
-          ),
-
-          // Dot Indicator Overlay
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            child: ValueListenableBuilder<int>(
-              valueListenable: _currentPage,
-              builder: (context, currentPage, _) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(3, (index) {
-                    final isActive = currentPage == index;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: isActive ? 28 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _PulseGlow extends StatefulWidget {
+  const _PulseGlow();
+
+  @override
+  State<_PulseGlow> createState() => _PulseGlowState();
+}
+
+class _PulseGlowState extends State<_PulseGlow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.05, end: 0.2).animate(_controller),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: RadialGradient(
+            colors: [AppColors.primaryRose, Colors.transparent],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AnimatedTitle extends StatelessWidget {
+  final bool visible;
+  final String title;
+  final String tagline;
+
+  const _AnimatedTitle({
+    required this.visible,
+    required this.title,
+    required this.tagline,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeOutCubic,
+          transform: Matrix4.translationValues(0, visible ? 0 : 25, 0),
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 700),
+            opacity: visible ? 1.0 : 0.0,
+            child: ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [Colors.white, Color(0xFFCCCCCC)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ).createShader(bounds),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 48,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: -1,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeOutCubic,
+          transform: Matrix4.translationValues(0, visible ? 0 : 15, 0),
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 700),
+            opacity: visible ? 1.0 : 0.0,
+            child: Text(
+              tagline,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.35),
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 5,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -38,6 +38,7 @@ dependencies:
   liquid_swipe: ^3.1.0
   glow_container: ^1.0.1
   model_viewer_plus: ^1.10.0
+  flutter_native_splash: ^2.4.4
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -90,3 +92,24 @@ flutter:
         - asset: assets/fonts/Poppins/Poppins-Bold.ttf
           weight: 700
 
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/icons/appIcon.png"
+  web:
+    generate: true
+    image_path: "assets/icons/appIcon.png"
+    background_color: "#FFE7E4"
+    theme_color: "#FFE7E4"
+  windows:
+    generate: true
+    image_path: "assets/icons/appIcon.png"
+    icon_size: 48
+
+flutter_native_splash:
+  color: "#000000"
+  image: assets/icons/appIcon.png
+  android: true
+  ios: true
+  web: false

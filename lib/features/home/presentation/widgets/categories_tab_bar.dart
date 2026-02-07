@@ -15,21 +15,21 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
   Widget build(BuildContext context) {
     return Container(
       height: 46,
-      child: Stack(
-        children: [
-          // Background/Border implementation
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(23),
-              border: Border.all(color: Colors.black12, width: 1),
-            ),
-          ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double tabWidth = constraints.maxWidth / categories.length;
+          return Stack(
+            children: [
+              // Background/Border implementation
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(23),
+                  border: Border.all(color: Colors.black12, width: 1),
+                ),
+              ),
 
-          // Animated Selector
-          LayoutBuilder(
-            builder: (context, constraints) {
-              double tabWidth = constraints.maxWidth / categories.length;
-              return AnimatedPositioned(
+              // Animated Selector
+              AnimatedPositioned(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.elasticOut,
                 left: _selectedIndex * tabWidth,
@@ -50,41 +50,41 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
                     ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
 
-          // Tab Items
-          Row(
-            children: List.generate(categories.length, (index) {
-              final isSelected = _selectedIndex == index;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  behavior: HitTestBehavior.opaque,
-                  child: Center(
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 300),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black45,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                        fontSize: 14,
-                        letterSpacing: 0.5,
+              // Tab Items
+              Row(
+                children: List.generate(categories.length, (index) {
+                  final isSelected = _selectedIndex == index;
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                      },
+                      behavior: HitTestBehavior.opaque,
+                      child: Center(
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 300),
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black45,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.w500,
+                            fontSize: 14,
+                            letterSpacing: 0.5,
+                          ),
+                          child: Text(categories[index]),
+                        ),
                       ),
-                      child: Text(categories[index]),
                     ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        ],
+                  );
+                }),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

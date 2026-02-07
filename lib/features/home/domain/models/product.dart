@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Product {
   final String id;
   final String name;
@@ -6,7 +8,7 @@ class Product {
   final String imagePath;
   final bool is3d;
   final String? modelPath;
- 
+  final List<Color> colors;
 
   Product({
     required this.id,
@@ -15,6 +17,7 @@ class Product {
     required this.price,
     required this.imagePath,
     required this.is3d,
-    this.modelPath ,
+    required this.colors,
+    this.modelPath,
   });
 }
