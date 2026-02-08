@@ -16,13 +16,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  String _phase = 'logo';
-  double _progress = 0;
-  late Timer _phaseTimer1;
-  late Timer _phaseTimer2;
-  late Timer _progressTimer;
+  late AnimationController _mainController;
+  late AnimationController _pulseController;
+  late Animation<double> _logoScale;
+  late Animation<double> _contentOpacity;
+  late Animation<double> _textSpacing;
 
-  late AnimationController _scanlineController;
+  final List<_Particle> _particles = [];
+  Timer? _particleTimer;
 
   @override
   void initState() {
@@ -32,374 +33,250 @@ class _SplashScreenState extends State<SplashScreen>
       FlutterNativeSplash.remove();
     });
 
-    _scanlineController = AnimationController(
+    // Main entrance animation
+    _mainController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+
+    // Continuous breathing animation
+    _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
-    )..repeat();
+    )..repeat(reverse: true);
 
-    _phaseTimer1 = Timer(const Duration(milliseconds: 800), () {
-      if (mounted) setState(() => _phase = 'text');
-    });
+    _logoScale = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
+      ),
+    );
 
-    _phaseTimer2 = Timer(const Duration(milliseconds: 1400), () {
-      if (mounted) setState(() => _phase = 'loading');
-    });
+    _contentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.2, 0.8, curve: Curves.easeIn),
+      ),
+    );
 
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    _textSpacing = Tween<double>(begin: 2.0, end: 8.0).animate(
+      CurvedAnimation(
+        parent: _mainController,
+        curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
+      ),
+    );
+
+    // Initialize particles
+    for (int i = 0; i < 20; i++) {
+      _particles.add(_Particle());
+    }
+    _particleTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (!mounted) return;
-      if (_phase == 'loading') {
-        setState(() {
-          if (_progress >= 100) {
-            _progress = 100;
-            timer.cancel();
-            _checkAndExit();
-          } else {
-            // Simulated progress logic without AuthBloc
-            _progress += math.Random().nextDouble() * 10;
-            if (_progress > 100) _progress = 100;
-          }
-        });
-      }
-    });
-  }
-
-  void _checkAndExit() {
-    if (_progress >= 100) {
-      setState(() => _phase = 'exit');
-
-      Future.delayed(const Duration(milliseconds: 600), () {
-        if (mounted) {
-          context.goNamed(AppRoutes.onboardingName);
+      setState(() {
+        for (var particle in _particles) {
+          particle.update();
         }
       });
-    }
+    });
+
+    _startSequence();
+  }
+
+  void _startSequence() async {
+    await _mainController.forward();
+    if (!mounted) return;
+
+    await Future.delayed(const Duration(milliseconds: 800));
+    if (!mounted) return;
+
+    context.goNamed(AppRoutes.onboardingName);
   }
 
   @override
   void dispose() {
-    _phaseTimer1.cancel();
-    _phaseTimer2.cancel();
-    _progressTimer.cancel();
-    _scanlineController.dispose();
+    _mainController.dispose();
+    _pulseController.dispose();
+    _particleTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.black, body: _buildBody());
-  }
-
-  Widget _buildBody() {
-    final bool isExit = _phase == 'exit';
-
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 800),
-      opacity: isExit ? 0.0 : 1.0,
-      child: AnimatedScale(
-        duration: const Duration(milliseconds: 800),
-        scale: isExit ? 1.1 : 1.0,
-        curve: Curves.easeOutQuart,
-        child: Stack(
-          children: [
-            // Background Glow
-            Center(
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryRose.withValues(alpha: 0.12),
-                      blurRadius: 100,
-                      spreadRadius: 50,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // 1. Ambient Background Pulse
+          AnimatedBuilder(
+            animation: _pulseController,
+            builder: (context, child) {
+              return Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 1.5,
+                  height: MediaQuery.of(context).size.width * 1.5,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        AppColors.primaryRose.withValues(
+                          alpha: 0.15 + (_pulseController.value * 0.05),
+                        ),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.7],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
+          ),
 
-            // Scanline animation
-            AnimatedBuilder(
-              animation: _scanlineController,
+          // 2. Floating Particles
+          CustomPaint(
+            painter: _ParticlePainter(_particles),
+            size: Size.infinite,
+          ),
+
+          // 3. Main Content
+          Center(
+            child: AnimatedBuilder(
+              animation: _mainController,
               builder: (context, child) {
-                return Positioned(
-                  top:
-                      MediaQuery.sizeOf(context).height *
-                      _scanlineController.value,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          AppColors.primaryRose.withValues(alpha: 0.15),
-                          Colors.transparent,
+                return Opacity(
+                  opacity: _contentOpacity.value,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo Ring
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Rotating orbital ring
+                          RotationTransition(
+                            turns: _pulseController,
+                            child: Container(
+                              width: 140,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // App Logo
+                          Transform.scale(
+                            scale: _logoScale.value,
+                            child: Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primaryRose.withValues(
+                                      alpha: 0.2,
+                                    ),
+                                    blurRadius: 30,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              child: Image.asset(
+                                AppAssets.appLogo,
+                                width: 140,
+                                height: 140,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 40),
+
+                      // Elegant Typography
+                      Text(
+                        "AURAWEAR",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: _textSpacing.value,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "LUXURY REIMAGINED",
+                        style: TextStyle(
+                          color: AppColors.primaryRose.withValues(alpha: 0.6),
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 4,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
             ),
-
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Logo Container
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 1000),
-                    curve: const Cubic(0.2, 0.8, 0.2, 1.0),
-                    width: 130,
-                    height: 130,
-                    transform: Matrix4.translationValues(
-                      0,
-                      _phase == 'logo' ? 40 : 0,
-                      0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF0A0A0A),
-                      borderRadius: BorderRadius.circular(36),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.08),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primaryRose.withValues(alpha: 0.15),
-                          blurRadius: 40,
-                          offset: const Offset(0, 15),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(36),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          const _PulseGlow(),
-                          Opacity(
-                            opacity: _phase == 'logo' ? 0.0 : 1.0,
-                            child: Image.asset(
-                              AppAssets.appLogo,
-                              width: 80,
-                              height: 80,
-                              errorBuilder: (c, e, s) => const Icon(
-                                Icons.auto_awesome_rounded,
-                                size: 60,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-
-                  // Title & Tagline
-                  ClipRect(
-                    child: _AnimatedTitle(
-                      visible: _phase != 'logo',
-                      title: "Aurawear",
-                      tagline: "LUXURY REIMAGINED",
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Progress Section
-            Positioned(
-              bottom: 110,
-              left: 0,
-              right: 0,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 700),
-                opacity: _phase == 'loading' || _phase == 'exit' ? 1.0 : 0.0,
-                child: Center(
-                  child: SizedBox(
-                    width: 260,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "INITIALIZING SYSTEMS",
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                fontSize: 9,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 2,
-                              ),
-                            ),
-                            Text(
-                              "${_progress.toInt()}%",
-                              style: const TextStyle(
-                                color: AppColors.primaryRose,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        // Custom Linear Progress
-                        Container(
-                          height: 3,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.05),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: FractionallySizedBox(
-                            alignment: Alignment.centerLeft,
-                            widthFactor: _progress / 100,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [AppColors.primaryRose, Colors.white],
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primaryRose.withValues(
-                                      alpha: 0.4,
-                                    ),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          "AURA PROTOCOL V1.0.1",
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            fontSize: 7,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _PulseGlow extends StatefulWidget {
-  const _PulseGlow();
+// --- Particle System Classes ---
 
-  @override
-  State<_PulseGlow> createState() => _PulseGlowState();
-}
+class _Particle {
+  double x = 0;
+  double y = 0;
+  double speed = 0;
+  double opacity = 0;
+  double size = 0;
+  final math.Random _random = math.Random();
 
-class _PulseGlowState extends State<_PulseGlow>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+  _Particle() {
+    reset(true);
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void reset(bool startRandom) {
+    x = _random.nextDouble();
+    y = startRandom ? _random.nextDouble() : 1.2;
+    speed = 0.001 + _random.nextDouble() * 0.002;
+    opacity = 0.1 + _random.nextDouble() * 0.4;
+    size = 1.0 + _random.nextDouble() * 2.0;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: Tween<double>(begin: 0.05, end: 0.2).animate(_controller),
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: RadialGradient(
-            colors: [AppColors.primaryRose, Colors.transparent],
-          ),
-        ),
-      ),
-    );
+  void update() {
+    y -= speed;
+    if (y < -0.2) {
+      reset(false);
+    }
   }
 }
 
-class _AnimatedTitle extends StatelessWidget {
-  final bool visible;
-  final String title;
-  final String tagline;
+class _ParticlePainter extends CustomPainter {
+  final List<_Particle> particles;
 
-  const _AnimatedTitle({
-    required this.visible,
-    required this.title,
-    required this.tagline,
-  });
+  _ParticlePainter(this.particles);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.easeOutCubic,
-          transform: Matrix4.translationValues(0, visible ? 0 : 25, 0),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 700),
-            opacity: visible ? 1.0 : 0.0,
-            child: ShaderMask(
-              shaderCallback: (bounds) => const LinearGradient(
-                colors: [Colors.white, Color(0xFFCCCCCC)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ).createShader(bounds),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 48,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -1,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 4),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 700),
-          curve: Curves.easeOutCubic,
-          transform: Matrix4.translationValues(0, visible ? 0 : 15, 0),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 700),
-            opacity: visible ? 1.0 : 0.0,
-            child: Text(
-              tagline,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.35),
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 5,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint();
+
+    for (var particle in particles) {
+      paint.color = AppColors.primaryRose.withValues(alpha: particle.opacity);
+      canvas.drawCircle(
+        Offset(particle.x * size.width, particle.y * size.height),
+        particle.size,
+        paint,
+      );
+    }
   }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

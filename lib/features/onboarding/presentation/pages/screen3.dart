@@ -5,8 +5,35 @@ import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class Screen3 extends StatelessWidget {
+class Screen3 extends StatefulWidget {
   const Screen3({super.key});
+
+  @override
+  State<Screen3> createState() => _Screen3State();
+}
+
+class _Screen3State extends State<Screen3> with SingleTickerProviderStateMixin {
+  late AnimationController _bounceController;
+  late Animation<double> _bounceAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _bounceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
+    _bounceAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _bounceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,32 +66,35 @@ class Screen3 extends StatelessWidget {
                   style: AppTextStyles.splashHeader,
                 ),
                 const SizedBox(height: 32),
-                BouncyButton(
-                  gradientColors: const [AppColors.primaryRose, Colors.white],
-                  onTap: () => context.goNamed('home'),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "SHOP NOW",
-                          style: AppTextStyles.labelLarge.copyWith(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.5,
+                ScaleTransition(
+                  scale: _bounceAnimation,
+                  child: BouncyButton(
+                    gradientColors: const [AppColors.primaryRose, Colors.white],
+                    onTap: () => context.goNamed('home'),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "SHOP NOW",
+                            style: AppTextStyles.labelLarge.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Colors.black,
-                          size: 16,
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+                          const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: Colors.black,
+                            size: 16,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -13,7 +13,7 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 46,
       child: LayoutBuilder(
         builder: (context, constraints) {

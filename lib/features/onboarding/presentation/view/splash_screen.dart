@@ -58,10 +58,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 38,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 borderRadius: 25,
-                backgroundColor: Colors.white.withOpacity(0.9),
+                backgroundColor: Colors.white.withValues(alpha: 0.9),
                 borderSide: BorderSide(
                   width: 0.5,
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                 ),
               ),
               transitionDuration: const Duration(milliseconds: 250),
@@ -87,14 +87,14 @@ class _SplashScreenState extends State<SplashScreen> {
             child: TextButton(
               onPressed: () => context.goNamed('home'),
               style: TextButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
                 ),
               ),
               child: const Text(
@@ -142,8 +142,115 @@ class _SplashScreenState extends State<SplashScreen> {
               },
             ),
           ),
+
+          // Swipe Guidance Arrow (Visible only on first 2 pages)
+          Positioned(
+            bottom: 150,
+            right: 20,
+            child: ValueListenableBuilder<int>(
+              valueListenable: _currentPage,
+              builder: (context, currentPage, _) {
+                return AnimatedOpacity(
+                  duration: const Duration(milliseconds: 300),
+                  opacity: currentPage < 2 ? 1.0 : 0.0,
+                  child: const _SwipeArrow(),
+                );
+              },
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _SwipeArrow extends StatefulWidget {
+  const _SwipeArrow();
+
+  @override
+  State<_SwipeArrow> createState() => _SwipeArrowState();
+}
+
+class _SwipeArrowState extends State<_SwipeArrow>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+
+    _slideAnimation = Tween<double>(begin: 0.0, end: -15.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      ),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.4, 0.9, curve: Curves.easeIn),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(_slideAnimation.value, 0),
+          child: Opacity(
+            opacity: _fadeAnimation.value,
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.keyboard_double_arrow_left_rounded,
+                  color: Colors.white,
+                  size: 32,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "SWIPE",
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

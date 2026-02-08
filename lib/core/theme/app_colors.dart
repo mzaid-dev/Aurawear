@@ -22,7 +22,7 @@ class AppColors {
   static const Color chipActive = Colors.black;
   static const Color searchIcon = Colors.black;
   static const Color iconBg = Colors.white;
-  static const Color product_card_bg = Color(0xFFF2D0CB);
+  static const Color productCardBg = Color(0xFFF2D0CB);
 
   // Background Colors
   static const Color background = Color(0xFFFEE1DD);

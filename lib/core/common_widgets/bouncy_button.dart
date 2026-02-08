@@ -76,7 +76,7 @@ class _BouncyButtonState extends State<BouncyButton>
             boxShadow: [
               BoxShadow(
                 color: (widget.gradientColors?.first ?? Colors.black)
-                    .withOpacity(0.3),
+                    .withValues(alpha: 0.3),
                 blurRadius: 15,
                 offset: const Offset(0, 8),
               ),

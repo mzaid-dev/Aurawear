@@ -66,9 +66,8 @@ flutter:
   # Assets
   assets:
     - assets/images/
-    - assets/images/splash/
+    - assets/images/onboarding/
     - assets/images/products/
-    - assets/images/hero/
     - assets/icons/
     - assets/3d_models/
     - assets/avator/
