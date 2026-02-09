@@ -16,11 +16,11 @@
   **Download the Release Build**
   <br>
   
-  <a href="releases/app-release.apk">
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/download/v1.0/app-release.apk">
     <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="24" alt="Download APK" />
   </a>
   &nbsp;
-  <a href="releases/Aurawear-Windows.zip">
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/download/v1.0/Aurawear-Windows.zip">
     <img src="https://img.shields.io/badge/Windows-Download_.EXE_(Zip)-0078D6?style=social&logo=windows&logoColor=0078D6" height="24" alt="Download Windows EXE" />
   </a>
 
@@ -37,7 +37,9 @@
   <img src="screenshots\onboarding3.png" height="400" alt="onboarding_screen_3" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
   <img src="screenshots\home.png" height="400" alt="home" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
   <img src="screenshots\product details.png" height="400" alt="Product Details" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\home.png" height="400" alt="home" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\model_view1.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\model_view2.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\model_view3.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
 </div>
 
 <br>

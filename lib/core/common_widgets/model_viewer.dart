@@ -47,22 +47,27 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
     final String assetPath =
         widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
 
-    // For local assets, we might need to copy them to a temp file for the WebView to read them properly on some platforms (like Windows Release)
+    debugPrint('Preparing 3D model for path: $assetPath');
+
     if (assetPath.startsWith('assets/')) {
       try {
         final byteData = await DefaultAssetBundle.of(context).load(assetPath);
         final file = await _createTempFile(assetPath, byteData);
+
         if (mounted) {
           setState(() {
-            _localModelPath = 'file://${file.path}';
+            // On Windows, file:/// URLs often need three slashes and forward slashes
+            // Example: file:///C:/Users/...
+            final String normalizedPath = file.path.replaceAll('\\', '/');
+            _localModelPath = 'file:///$normalizedPath';
+            debugPrint('Local model path set to: $_localModelPath');
             _isLoading = false;
           });
         }
       } catch (e) {
-        debugPrint('Error loading 3d model: $e');
+        debugPrint('Error loading 3D model from assets: $e');
         if (mounted) {
           setState(() {
-            // Fallback to original path if copy fails
             _localModelPath = assetPath;
             _isLoading = false;
           });
@@ -83,6 +88,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
     final fileName = name.split('/').last;
     final file = io.File('${directory.path}/$fileName');
     await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
+    debugPrint('Temp file created at: ${file.path}');
     return file;
   }
 
@@ -123,6 +129,12 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
 
   @override
   Widget build(BuildContext context) {
+    // Determine the source to use
+    final String modelSrc =
+        _localModelPath ??
+        widget.product.modelPath ??
+        'assets/3d_models/headphone.glb';
+
     return Scaffold(
       backgroundColor: AppColors.homeBg,
       body: Stack(
@@ -170,15 +182,13 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                       children: [
                         Center(
                           child: ModelViewer(
+                            key: ValueKey(modelSrc),
                             backgroundColor: Colors.transparent,
-                            src:
-                                _localModelPath ??
-                                widget.product.modelPath ??
-                                'assets/3d_models/headphone.glb',
+                            src: modelSrc,
                             alt: "A 3D model of ${widget.product.name}",
                             autoRotate: _isAutoRotate,
                             cameraControls: true,
-                            ar: true,
+                            ar: !io.Platform.isWindows, // Disable AR on Windows
                             autoPlay: true,
                             shadowIntensity: 1,
                             disableZoom: false,
