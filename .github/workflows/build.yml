@@ -1,9 +1,10 @@
-name: Build Aurawear
+name: Build & Release Aurawear
+
+permissions:
+  contents: write # Required to create releases
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
@@ -19,10 +20,11 @@ jobs:
         run: flutter pub get
       - name: Build APK
         run: flutter build apk --release
-      - name: Upload APK
+      # Save APK for the release job
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: aurawear-apk
+          name: app-release
           path: build/app/outputs/flutter-apk/app-release.apk
 
   build-windows:
@@ -36,8 +38,38 @@ jobs:
         run: flutter pub get
       - name: Build Windows
         run: flutter build windows --release
-      - name: Upload Windows EXE
+      # Zip the Windows build (required for download)
+      - name: Archive Windows Release
+        shell: pwsh
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Aurawear-Windows.zip
+      # Save Zip for the release job
+      - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: aurawear-windows
-          path: build/windows/x64/runner/Release/
+          name: Aurawear-Windows
+          path: Aurawear-Windows.zip
+
+  # This job takes the files and puts them in a public download link
+  create-release:
+    needs: [build-android, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release
+      - name: Download Windows Zip
+        uses: actions/download-artifact@v4
+        with:
+          name: Aurawear-Windows
+      
+      - name: Update Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          name: "Latest Build (Aurawear)"
+          files: |
+            app-release.apk
+            Aurawear-Windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
