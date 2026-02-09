@@ -15,6 +15,13 @@
 
   **Download the Release Build**
   <br>
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/download/latest/app-release.apk">
+    <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="35" alt="Download APK" />
+</a>
+&nbsp;
+<a href="https://github.com/mzaid-dev/Aurawear/releases/download/latest/Aurawear-Windows.zip">
+    <img src="https://img.shields.io/badge/Windows-Download_.EXE_(Zip)-0078D6?style=social&logo=windows&logoColor=0078D6" height="35" alt="Download Windows EXE" />
+</a>
   <a href="releases/app-release.apk">
     <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="24" alt="Download APK" />
   </a>
