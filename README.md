@@ -29,8 +29,6 @@
 
 ## 📸 Interactive Mockups
 
-> **Scroll horizontally** to explore the UI journey.
-
 <div style="overflow-x: auto; white-space: nowrap; padding-bottom: 20px;">
   <img src="screenshots\splash.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
   <img src="screenshots\onboarding1.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
