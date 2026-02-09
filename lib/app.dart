@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:device_frame/device_frame.dart';
 import 'core/theme/app_theme.dart';
-import 'router/app_router.dart';
+import 'core/router/app_router.dart';
 
 class AurawearApp extends StatelessWidget {
   const AurawearApp({super.key});

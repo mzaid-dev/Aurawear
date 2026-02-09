@@ -1,148 +1,155 @@
-# 🎧 Aurawear - Premium Audio E-Commerce App
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:FFE1DD,50:E35858,100:C04848&height=300&section=header&text=Aurawear&fontSize=90&fontAlign=50&fontAlignY=35&animation=fadeIn&fontColor=FFFFFF&desc=The%20Ultimate%20Flutter%20E-Commerce%20UI%20Kit&descAlign=50&descAlignY=60&descSize=20&fontUrl=https://fonts.googleapis.com/css2?family=Outfit:wght@700" alt="Aurawear Header" width="100%" />
+  
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.demolab.com?font=Outfit&weight=500&size=28&pause=1000&color=C04848&center=true&vCenter=true&width=800&lines=Premium+Shopping+Experience;Interactive+3D+Product+Visualization;Fluid+Liquid+Swipe+Animations;Production-Ready+UI+Architecture" alt="Typing Animation" />
+  </a>
 
-A beautiful Flutter mobile application for browsing and purchasing premium audio equipment, built with **Clean Architecture** and **BLoC** pattern for scalability and maintainability.
+  <p>
+    <a href="#"><img src="https://img.shields.io/badge/Flutter-3.10+-02569B?style=social&logo=flutter&logoColor=02569B" alt="Flutter" /></a>&nbsp;
+    <a href="#"><img src="https://img.shields.io/badge/Dart-3.0+-0175C2?style=social&logo=dart&logoColor=0175C2" alt="Dart" /></a>&nbsp;
+    <a href="#"><img src="https://img.shields.io/badge/License-MIT-4caf50?style=social&logo=opensourceinitiative&logoColor=4caf50" alt="License" /></a>
+  </p>
 
-## 📱 Project Overview
+  ## Aurawear Demo
 
-Aurawear is a UI demo project showcasing a modern e-commerce experience with a stunning **rose/pink aesthetic**. The app features product browsing, detailed views, and is structured for easy expansion into a full-stack application.
+  **Download the Release Build**
+  <br>
+  <a href="releases/app-release.apk">
+    <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="24" alt="Download APK" />
+  </a>
+  &nbsp;
+  <a href="releases/Aurawear-Windows.zip">
+    <img src="https://img.shields.io/badge/Windows-Download_.EXE_(Zip)-0078D6?style=social&logo=windows&logoColor=0078D6" height="24" alt="Download Windows EXE" />
+  </a>
 
-## 🏗️ Architecture
+</div>
 
-This project follows **Clean Architecture** principles with clear separation of concerns:
+<br>
+
+## 📸 Interactive Mockups
+
+> **Scroll horizontally** to explore the UI journey.
+
+<div style="overflow-x: auto; white-space: nowrap; padding-bottom: 20px;">
+  <img src="screenshots\splash.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\onboarding1.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\onboarding2.png" height="400" alt="onboarding_screen_2" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\onboarding3.png" height="400" alt="onboarding_screen_3" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\home.png" height="400" alt="home" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\product details.png" height="400" alt="Product Details" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots\home.png" height="400" alt="home" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+</div>
+
+<br>
+
+## 🎨 Overview
+
+**Aurawear** redefines the mobile shopping experience. Built to showcase the **limitless potential of Flutter**, this project is a high-fidelity UI kit that seamlessly blends sophisticated design with cutting-edge interaction patterns.
+
+It is designed for developers and designers who want to explore **3D optimizations**, **custom rendering**, and **gesture-driven interfaces** without the overhead of backend dependencies.
+
+<br>
+
+<div align="center">
+  <img src="assets/icons/appiconwithbg.png" alt="App Logo" width="150" style="border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);" />
+  <br>
+  <i><b>Official App Icon</b></i>
+</div>
+
+<br>
+
+## ✨ Key Features
+
+<table border="0">
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🛍️ Cinematic Shopping</h3>
+      <p>A masonry-style feed with hero animations that make product browsing feel like a fluid cinematic experience.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>👓 Interactive 3D</h3>
+      <p>inspect products in real-time. Rotate, zoom, and explore every detail using our optimized WebGL-based viewer.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🌊 Liquid Onboarding</h3>
+      <p>Engage users instantly with a liquid-swipe introduction sequence, powered by custom physics simulations.</p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🎨 Dusty Rose Design System</h3>
+      <p>A meticulously crafted theme using <code>#E35858</code> and <code>#FFE1DD</code>, ensuring consistent typography and color harmony.</p>
+    </td>
+  </tr>
+</table>
+
+## 🛠️ Powered By
+
+<div align="center">
+  <br>
+  <img src="https://skillicons.dev/icons?i=flutter,dart,androidstudio,git,github&theme=light" height="50" alt="Tech Stack" />
+  
+  <br>
+
+  | Core Tech | UI Utilities |
+  | :--- | :--- |
+  | **Flutter SDK 3.10+** | `model_viewer_plus` (3D) |
+  | **Dart 3.0+** | `liquid_swipe` (Gestures) |
+  | **Clean Code Principles** | `google_fonts` (Typography) |
+
+</div>
+
+<br>
+
+## 📂 Architecture
+
+Designed for **readability** and **modularity**.
 
 ```
 lib/
-├── core/               # Shared resources
-│   ├── constants/      # App & API constants
-│   ├── theme/          # Design system (colors, typography, theme)
-│   ├── utils/          # Helper functions
-│   ├── routes/         # Navigation & routing
-│   └── error/          # Error handling & exceptions
-│
-├── features/           # Feature modules (layered architecture)
-│   ├── products/
-│   │   ├── domain/         # Business logic layer
-│   │   │   ├── entities/       # Business objects
-│   │   │   ├── repositories/   # Repository interfaces
-│   │   │   └── usecases/       # Use cases
-│   │   ├── data/           # Data layer
-│   │   │   ├── models/         # Data models
-│   │   │   ├── repositories/   # Repository implementations
-│   │   │   └── datasources/    # Data sources (local/remote)
-│   │   └── presentation/   # UI layer
-│   │       ├── bloc/           # BLoC state management
-│   │       ├── pages/          # Screens
-│   │       └── widgets/        # Reusable components
-│   │
-│   ├── home/           # Home feature (same structure)
-│   └── cart/           # Cart feature (placeholder for future)
-│
-└── shared/             # Shared UI components
-    └── widgets/
+├── core/               # 🎨 Theme, Constants, & Shared Utilities
+├── features/           # 📦 UI Modules (Isolated Features)
+│   ├── home/           #    - Product Feed & Details
+│   ├── onboarding/     #    - Intro Sequence
+│   └── splash/         #    - App Initialization
+├── app.dart            # 🚀 Root Widget
+└── main.dart           # 🏁 Entry Point
 ```
 
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: Rose/Pink theme (`#E8B4B8`)
-- **Accents**: Coral, Peach, Mint, Lavender
-- **Text**: Dark gray, secondary gray, white
-- **Functional**: Success, error, warning, info colors
-
-### Typography
-- Material 3 design system
-- Responsive text styles (display, headline, title, body, label)
-- Custom styles for prices, buttons, and hero sections
+<br>
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Flutter SDK (3.10.1 or higher)
-- Dart SDK
-- IDE (VS Code / Android Studio)
+1.  **Clone** the repository:
+    ```bash
+    git clone https://github.com/mzaid-dev/Aurawear.git
+    ```
+2.  **Install** dependencies:
+    ```bash
+    flutter pub get
+    ```
+3.  **Run** on your preferred device:
+    ```bash
+    flutter run
+    ```
 
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd Aurawear
-   ```
-
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Run the app**
-   ```bash
-   flutter run
-   ```
-
-## 📦 Dependencies
-
-### Core Dependencies
-- `flutter_bloc` ^8.1.6 - State management
-- `equatable` ^2.0.7 - Value equality
-- `dartz` ^0.10.1 - Functional programming (Either, Option)
-
-### Future Dependencies (Commented)
-- `dio` / `http` - HTTP client for API calls
-- `shared_preferences` / `hive` - Local storage
-
-## 🗂️ Project Features
-
-### Current Features
-- ✅ Professional folder structure
-- ✅ Clean architecture setup
-- ✅ Rose/pink theme configuration
-- ✅ Product domain & data layers
-- ✅ Mock product data
-- ✅ Navigation setup
-- ✅ Error handling framework
-
-### Planned Features
-- 🔜 Home screen UI
-- 🔜 New arrivals page
-- 🔜 Product detail page
-- 🔜 Product widgets (cards, chips, color selector)
-- 🔜 BLoC implementation
-- 🔜 Search functionality
-- 🔜 Cart feature
-- 🔜 Backend API integration
-
-## 🎯 Scalability
-
-This architecture is designed for scalability:
-
-1. **Easy to add features**: Copy the feature folder structure
-2. **Ready for BLoC**: State management infrastructure in place
-3. **Prepared for API**: Remote data sources ready for integration
-4. **Testable**: Clean separation allows for comprehensive testing
-5. **Maintainable**: Single responsibility principle throughout
-
-## 📝 Development Guidelines
-
-### Adding a New Feature
-1. Create feature folder: `lib/features/[feature_name]`
-2. Add domain layer (entities, repositories, use cases)
-3. Add data layer (models, data sources, repository implementation)
-4. Add presentation layer (BLoC, pages, widgets)
-
-### Code Organization
-- Keep business logic in domain layer (pure Dart, no Flutter)
-- UI code only in presentation layer
-- Data fetching only in data layer
-- Use dependency injection for flexibility
-
-## 🤝 Contributing
-
-This is a demo project showing best practices in Flutter development with clean architecture.
-
-## 📄 License
-
-This project is for educational and demonstration purposes.
+<br>
 
 ---
 
-**Built with ❤️ using Flutter & Clean Architecture**
+<div align="center">
+  <br>
+  
+  <h3>👨‍💻 Crafted with ❤️ by Muhammad Zaid</h3>
+
+  <p>
+    <a href="https://github.com/mzaid-dev"><img src="https://img.shields.io/badge/GitHub-Message_Me-181717?style=social&logo=github" alt="GitHub"></a>
+    &nbsp;&nbsp;
+    <a href="https://linkedin.com/in/mzaid-dev"><img src="https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=social&logo=linkedin" alt="LinkedIn"></a>
+    &nbsp;&nbsp;
+    <a href="mailto:dev.mzaid@gmail.com"><img src="https://img.shields.io/badge/Email-dev.mzaid@gmail.com-EA4335?style=social&logo=gmail" alt="Email"></a>
+  </p>
+  
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:FFE1DD,50:E35858,100:C04848&height=100&section=footer" width="100%" />
+</div>

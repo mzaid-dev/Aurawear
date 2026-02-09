@@ -9,6 +9,7 @@ class Product {
   final bool is3d;
   final String? modelPath;
   final List<Color> colors;
+  final int selectedColor;
 
   Product({
     required this.id,
@@ -18,6 +19,7 @@ class Product {
     required this.imagePath,
     required this.is3d,
     required this.colors,
+    required this.selectedColor,
     this.modelPath,
   });
 }

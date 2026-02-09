@@ -38,7 +38,9 @@ The output file will be located at: `build/app/outputs/flutter-apk/app-release.a
 ```powershell
 flutter build windows --release
 ```
-The output files will be located in: `build/windows/runner/Release/`
+The output files will be located in: `build/windows/x64/runner/Release/`
+
+> **Note**: Building for Windows requires "Developer Mode" to be enabled in Windows Settings to allow symlinks.
 
 ## Troubleshooting
 

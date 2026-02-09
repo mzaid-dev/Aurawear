@@ -39,6 +39,7 @@ dependencies:
   glow_container: ^1.0.1
   model_viewer_plus: ^1.10.0
   flutter_native_splash: ^2.4.4
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -95,15 +96,15 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: false
-  image_path: "assets/icons/appIcon.png"
+  image_path: "assets/icons/appIconwithbg.png"
   web:
     generate: true
-    image_path: "assets/icons/appIcon.png"
+    image_path: "assets/icons/appIconwithbg.png"
     background_color: "#FFE7E4"
     theme_color: "#FFE7E4"
   windows:
     generate: true
-    image_path: "assets/icons/appIcon.png"
+    image_path: "assets/icons/appIconwithbg.png"
     icon_size: 48
 
 flutter_native_splash:

@@ -51,13 +51,13 @@ class _ProductTileState extends State<ProductTile>
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFFF2D0CB), // Light grey background like design
+            color: const Color(0xFFF2D0CB),
             borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+
             children: [
               Expanded(
                 child: Hero(

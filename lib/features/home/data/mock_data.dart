@@ -13,11 +13,12 @@ class MockData {
       imagePath: AppAssets.airpodPro,
       is3d: true,
       modelPath: AppAssets.airpodProModel,
+      selectedColor: 1,
       colors: [
-        const Color(0xFFF2D0CB), // Rose
-        const Color(0xFFE5E5E5), // Silver
-        const Color(0xFF333333), // Space Gray
-        const Color(0xFFD4AF37), // Gold
+        const Color(0xFFFFFFFF),
+        const Color(0xFFFFBF00),
+        const Color(0xFF2E3641),
+        const Color(0xFF707E6C),
       ],
     ),
     Product(
@@ -27,11 +28,12 @@ class MockData {
       price: 359.00,
       imagePath: AppAssets.speaker,
       is3d: false,
+      selectedColor: 3,
       colors: [
-        const Color(0xFF000000), // Black
-        const Color(0xFFFFFFFF), // White
-        const Color(0xFF4A4A4A), // Gray
-        const Color(0xFF1B4F72), // Blue
+        const Color(0xFF2C528C),
+        const Color(0xFFF0C050),
+        const Color(0xFFE04E30),
+        const Color(0xFF202B38),
       ],
     ),
     Product(
@@ -42,11 +44,12 @@ class MockData {
       imagePath: AppAssets.headphone,
       is3d: true,
       modelPath: AppAssets.headphoneModel,
+      selectedColor: 4,
       colors: [
-        const Color(0xFFF2D0CB), // Rose
-        const Color(0xFF1C1C1E), // Mid Night
-        const Color(0xFFFAFAFA), // Starlight
-        const Color(0xFFB9E5E8), // Sky Blue
+        const Color(0xFFFDBDB5),
+        const Color(0xFF44528C),
+        const Color(0xFF6B4C85),
+        const Color(0xFFD68741),
       ],
     ),
     Product(
@@ -56,11 +59,12 @@ class MockData {
       price: 60.00,
       imagePath: AppAssets.earphone,
       is3d: false,
+      selectedColor: 1,
       colors: [
-        const Color(0xFFFDBDB5), // Coral
-        const Color(0xFF2C3E50), // Navy
-        const Color(0xFF95A5A6), // Concrete
-        const Color(0xFF27AE60), // Green
+        const Color(0xFFFFFFFF),
+        const Color(0xFF000000),
+        const Color(0xFF4B4B4C),
+        const Color(0xFF6093A8),
       ],
     ),
     Product(
@@ -71,11 +75,12 @@ class MockData {
       imagePath: AppAssets.watch,
       is3d: true,
       modelPath: AppAssets.appleWatchModel,
+      selectedColor: 2,
       colors: [
-        const Color(0xFFE2E2E2), // Titanium
-        const Color(0xFFEF6C00), // Orange
-        const Color(0xFF1B5E20), // Green
-        const Color(0xFF01579B), // Blue
+        const Color.fromARGB(255, 248, 91, 43),
+        const Color(0xFF202B38),
+        const Color(0xFF6093A8),
+        const Color(0xFF44528C),
       ],
     ),
     Product(
@@ -86,12 +91,8 @@ class MockData {
       imagePath: AppAssets.visionPro,
       is3d: true,
       modelPath: AppAssets.visionModel,
-      colors: [
-        const Color(0xFFC0C0C0), // Silver
-        const Color(0xFF424242), // Charcoal
-        const Color(0xFFE0E0E0), // White
-        const Color(0xFF7986CB), // Indigo
-      ],
+      selectedColor: 1,
+      colors: [const Color(0xFFFFFFFF), const Color(0xFF000000)],
     ),
   ];
 }

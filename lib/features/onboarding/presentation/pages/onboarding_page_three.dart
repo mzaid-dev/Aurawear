@@ -5,14 +5,15 @@ import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class Screen3 extends StatefulWidget {
-  const Screen3({super.key});
+class OnboardingPageThree extends StatefulWidget {
+  const OnboardingPageThree({super.key});
 
   @override
-  State<Screen3> createState() => _Screen3State();
+  State<OnboardingPageThree> createState() => _OnboardingPageThreeState();
 }
 
-class _Screen3State extends State<Screen3> with SingleTickerProviderStateMixin {
+class _OnboardingPageThreeState extends State<OnboardingPageThree>
+    with SingleTickerProviderStateMixin {
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
 
@@ -41,13 +42,12 @@ class _Screen3State extends State<Screen3> with SingleTickerProviderStateMixin {
       decoration: const BoxDecoration(color: Colors.black),
       child: Stack(
         children: [
-          // Background Image
           Positioned.fill(
             child: Image.asset(AppAssets.splashBackground3, fit: BoxFit.cover),
           ),
 
           Positioned(
-            bottom: 120, // Adjusted to fit button below
+            bottom: 120,
             left: 26,
             right: 26,
             child: Column(

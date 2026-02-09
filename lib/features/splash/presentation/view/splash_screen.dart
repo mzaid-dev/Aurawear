@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:math' as math;
 import 'package:aurawear/core/constants/app_assets.dart';
 import 'package:aurawear/core/theme/app_colors.dart';
-import 'package:aurawear/router/app_routes.dart';
+import 'package:aurawear/core/router/app_routes.dart';
+import 'package:aurawear/features/splash/presentation/widgets/particle_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _contentOpacity;
   late Animation<double> _textSpacing;
 
-  final List<_Particle> _particles = [];
+  final List<Particle> _particles = [];
   Timer? _particleTimer;
 
   @override
@@ -33,13 +33,11 @@ class _SplashScreenState extends State<SplashScreen>
       FlutterNativeSplash.remove();
     });
 
-    // Main entrance animation
     _mainController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     );
 
-    // Continuous breathing animation
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
@@ -66,9 +64,8 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
 
-    // Initialize particles
     for (int i = 0; i < 20; i++) {
-      _particles.add(_Particle());
+      _particles.add(Particle());
     }
     _particleTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (!mounted) return;
@@ -106,7 +103,6 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // 1. Ambient Background Pulse
           AnimatedBuilder(
             animation: _pulseController,
             builder: (context, child) {
@@ -131,13 +127,11 @@ class _SplashScreenState extends State<SplashScreen>
             },
           ),
 
-          // 2. Floating Particles
           CustomPaint(
-            painter: _ParticlePainter(_particles),
+            painter: ParticlePainter(_particles),
             size: Size.infinite,
           ),
 
-          // 3. Main Content
           Center(
             child: AnimatedBuilder(
               animation: _mainController,
@@ -147,11 +141,9 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Logo Ring
                       Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Rotating orbital ring
                           RotationTransition(
                             turns: _pulseController,
                             child: Container(
@@ -166,7 +158,6 @@ class _SplashScreenState extends State<SplashScreen>
                               ),
                             ),
                           ),
-                          // App Logo
                           Transform.scale(
                             scale: _logoScale.value,
                             child: Container(
@@ -195,7 +186,6 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 40),
 
-                      // Elegant Typography
                       Text(
                         "AURAWEAR",
                         style: TextStyle(
@@ -226,57 +216,4 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-}
-
-// --- Particle System Classes ---
-
-class _Particle {
-  double x = 0;
-  double y = 0;
-  double speed = 0;
-  double opacity = 0;
-  double size = 0;
-  final math.Random _random = math.Random();
-
-  _Particle() {
-    reset(true);
-  }
-
-  void reset(bool startRandom) {
-    x = _random.nextDouble();
-    y = startRandom ? _random.nextDouble() : 1.2;
-    speed = 0.001 + _random.nextDouble() * 0.002;
-    opacity = 0.1 + _random.nextDouble() * 0.4;
-    size = 1.0 + _random.nextDouble() * 2.0;
-  }
-
-  void update() {
-    y -= speed;
-    if (y < -0.2) {
-      reset(false);
-    }
-  }
-}
-
-class _ParticlePainter extends CustomPainter {
-  final List<_Particle> particles;
-
-  _ParticlePainter(this.particles);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-
-    for (var particle in particles) {
-      paint.color = AppColors.primaryRose.withValues(alpha: particle.opacity);
-      canvas.drawCircle(
-        Offset(particle.x * size.width, particle.y * size.height),
-        particle.size,
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

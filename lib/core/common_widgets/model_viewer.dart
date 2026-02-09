@@ -1,9 +1,12 @@
+import 'dart:io' as io;
 import 'dart:math' as math;
 import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // For ByteData
 import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ModelViewerWidget extends StatefulWidget {
   final Product product;
@@ -16,11 +19,13 @@ class ModelViewerWidget extends StatefulWidget {
 class _ModelViewerWidgetState extends State<ModelViewerWidget>
     with SingleTickerProviderStateMixin {
   bool _isAutoRotate = true;
-  double _fov = 30; // Default field of view
+  double _fov = 30;
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
   bool _isMenuOpen = false;
   bool _isLoading = true;
+
+  String? _localModelPath;
 
   @override
   void initState() {
@@ -35,14 +40,50 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       reverseCurve: Curves.easeInBack,
     );
 
-    // Simulate loading for the 3D model
-    Future.delayed(const Duration(seconds: 2), () {
+    _prepareModel();
+  }
+
+  Future<void> _prepareModel() async {
+    final String assetPath =
+        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
+
+    // For local assets, we might need to copy them to a temp file for the WebView to read them properly on some platforms (like Windows Release)
+    if (assetPath.startsWith('assets/')) {
+      try {
+        final byteData = await DefaultAssetBundle.of(context).load(assetPath);
+        final file = await _createTempFile(assetPath, byteData);
+        if (mounted) {
+          setState(() {
+            _localModelPath = 'file://${file.path}';
+            _isLoading = false;
+          });
+        }
+      } catch (e) {
+        debugPrint('Error loading 3d model: $e');
+        if (mounted) {
+          setState(() {
+            // Fallback to original path if copy fails
+            _localModelPath = assetPath;
+            _isLoading = false;
+          });
+        }
+      }
+    } else {
       if (mounted) {
         setState(() {
+          _localModelPath = assetPath;
           _isLoading = false;
         });
       }
-    });
+    }
+  }
+
+  Future<io.File> _createTempFile(String name, ByteData data) async {
+    final directory = await getTemporaryDirectory();
+    final fileName = name.split('/').last;
+    final file = io.File('${directory.path}/$fileName');
+    await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
+    return file;
   }
 
   @override
@@ -109,7 +150,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(width: 48), // Spacer for balance
+                      const SizedBox(width: 48),
                     ],
                   ),
                 ),
@@ -131,6 +172,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                           child: ModelViewer(
                             backgroundColor: Colors.transparent,
                             src:
+                                _localModelPath ??
                                 widget.product.modelPath ??
                                 'assets/3d_models/headphone.glb',
                             alt: "A 3D model of ${widget.product.name}",
@@ -156,7 +198,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
               ],
             ),
           ),
-          // Circular Menu Layer
+
           Positioned(
             bottom: 16,
             right: 16,
@@ -187,7 +229,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                   backgroundColor: AppColors.primaryRose,
                   elevation: 4,
                   child: AnimatedRotation(
-                    turns: _isMenuOpen ? 0.125 : 0, // 45 degrees
+                    turns: _isMenuOpen ? 0.125 : 0,
                     duration: const Duration(milliseconds: 300),
                     child: Icon(
                       _isMenuOpen ? Icons.add : Icons.settings_outlined,
@@ -210,8 +252,6 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
     required String tooltip,
   }) {
     const double distance = 100.0;
-    // Buttons at 112.5, 157.5, 202.5 degrees roughly (adjusted for better look)
-    // Or 180 (left), 225 (diagonal), 270 (up)
     final double angle = 180 + (index * 45);
     final double radians = angle * math.pi / 180;
 

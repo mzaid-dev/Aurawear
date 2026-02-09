@@ -7,7 +7,6 @@ class AppTextStyles {
 
   static const String fontFamily = 'Poppins';
 
-  // Display Styles (Large Headings)
   static const TextStyle displayLarge = TextStyle(
     fontFamily: fontFamily,
     fontSize: 40,
@@ -17,7 +16,6 @@ class AppTextStyles {
     height: 1.1,
   );
 
-  // Specific Design Image Styles
   static const TextStyle splashHeader = TextStyle(
     fontFamily: fontFamily,
     fontSize: 44,
@@ -101,7 +99,6 @@ class AppTextStyles {
     color: AppColors.textWhite,
   );
 
-  // Legacy/Default Styles (Keep for compatibility)
   static const TextStyle headlineLarge = TextStyle(
     fontFamily: fontFamily,
     fontSize: 24,
@@ -118,7 +115,6 @@ class AppTextStyles {
     height: 1.4,
   );
 
-  // Body Styles
   static const TextStyle bodyLarge = TextStyle(
     fontFamily: fontFamily,
     fontSize: 16,
@@ -143,7 +139,6 @@ class AppTextStyles {
     height: 1.4,
   );
 
-  // Label & Action Styles
   static const TextStyle labelLarge = TextStyle(
     fontFamily: fontFamily,
     fontSize: 14,

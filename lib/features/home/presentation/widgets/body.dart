@@ -2,7 +2,7 @@ import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:aurawear/features/home/data/mock_data.dart';
 import 'package:aurawear/features/home/presentation/widgets/categories_tab_bar.dart';
 import 'package:aurawear/features/home/presentation/widgets/product_tile.dart';
-import 'package:aurawear/router/app_routes.dart';
+import 'package:aurawear/core/router/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -81,16 +81,12 @@ class _HomeBodyState extends State<HomeBody>
                 ),
                 const SizedBox(height: 20),
 
-                // Tab Bar
                 const CustomChipTabBar(),
                 const SizedBox(height: 24),
 
-                // Product Grid
                 Expanded(
                   child: GridView.builder(
-                    padding: const EdgeInsets.only(
-                      bottom: 100,
-                    ), // Space for FAB
+                    padding: const EdgeInsets.only(bottom: 100),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,

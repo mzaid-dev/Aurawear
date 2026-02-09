@@ -20,7 +20,6 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
           double tabWidth = constraints.maxWidth / categories.length;
           return Stack(
             children: [
-              // Background/Border implementation
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(23),
@@ -28,7 +27,6 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
                 ),
               ),
 
-              // Animated Selector
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.elasticOut,
@@ -52,7 +50,6 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
                 ),
               ),
 
-              // Tab Items
               Row(
                 children: List.generate(categories.length, (index) {
                   final isSelected = _selectedIndex == index;
