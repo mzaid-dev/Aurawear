@@ -1,11 +1,13 @@
 name: Build & Release Aurawear
 
 permissions:
-  contents: write # REQUIRED: Lets the script upload files to Releases
+  contents: write # Required to create releases
 
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - 'v*' # <--- THIS WAS MISSING! It listens for tags like v1.0, v2.0
   workflow_dispatch:
 
 jobs:
@@ -37,7 +39,6 @@ jobs:
         run: flutter pub get
       - name: Build Windows
         run: flutter build windows --release
-      # We must ZIP the windows file because it is a folder, not a single file
       - name: Archive Windows Release
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath Aurawear-Windows.zip
       - name: Upload Windows Artifact
@@ -46,10 +47,10 @@ jobs:
           name: Aurawear-Windows
           path: Aurawear-Windows.zip
 
-  # This creates the download link
   create-release:
     needs: [build-android, build-windows]
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') # Only runs if you pushed a tag
     steps:
       - name: Download APK
         uses: actions/download-artifact@v4
@@ -60,9 +61,8 @@ jobs:
         with:
           name: Aurawear-Windows
       
-      - name: Update Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/') # Only runs if you tag a version
         with:
           files: |
             app-release.apk
