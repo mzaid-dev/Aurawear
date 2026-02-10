@@ -36,7 +36,7 @@ jobs:
       - name: Build Windows
         run: flutter build windows --release
       - name: Build Windows Installer (EXE)
-        run: dart run inno_bundle:build --release
+        run: dart run inno_bundle --release
       - name: Debug - List Build Files
         if: failure()
         run: |
