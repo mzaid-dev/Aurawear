@@ -5,8 +5,10 @@ import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 import 'package:path_provider/path_provider.dart';
+import 'windows_model_viewer.dart';
 
 class ModelViewerWidget extends StatefulWidget {
   final Product product;
@@ -23,6 +25,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
   late Animation<double> _expandAnimation;
   bool _isMenuOpen = false;
   final Flutter3DController _controller = Flutter3DController();
+  final Windows3DController _windowsController = Windows3DController();
   String? _stagedModelPath;
   bool _isLoading = true;
 
@@ -45,7 +48,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
     final String assetPath =
         widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
 
-    if (io.Platform.isWindows) {
+    if (!kIsWeb && io.Platform.isWindows) {
       try {
         final directory = await getTemporaryDirectory();
         final fileName = assetPath.split('/').last;
@@ -103,16 +106,27 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
   }
 
   void _zoomIn() {
-    _controller.setCameraOrbit(0, 0, -5);
+    if (!kIsWeb && io.Platform.isWindows) {
+      _windowsController.setCameraOrbit(0, 0, -0.5);
+    } else {
+      _controller.setCameraOrbit(0, 0, -5);
+    }
   }
 
   void _zoomOut() {
-    _controller.setCameraOrbit(0, 0, 5);
+    if (!kIsWeb && io.Platform.isWindows) {
+      _windowsController.setCameraOrbit(0, 0, 0.5);
+    } else {
+      _controller.setCameraOrbit(0, 0, 5);
+    }
   }
 
   void _toggleAutoRotate() {
     setState(() {
       _isAutoRotate = !_isAutoRotate;
+      if (!kIsWeb && io.Platform.isWindows) {
+        _windowsController.setAutoRotate(_isAutoRotate);
+      }
     });
   }
 
@@ -165,6 +179,12 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                       child: _isLoading
                           ? const CircularProgressIndicator(
                               color: AppColors.primaryRose,
+                            )
+                          : (!kIsWeb && io.Platform.isWindows)
+                          ? WindowsModelViewer(
+                              selectedModel: _stagedModelPath!,
+                              controller: _windowsController,
+                              autoRotate: _isAutoRotate,
                             )
                           : Flutter3DViewer(
                               src: _stagedModelPath!,
