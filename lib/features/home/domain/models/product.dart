@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class Product {
   final String id;
   final String name;
@@ -10,7 +9,6 @@ class Product {
   final String? modelPath;
   final List<Color> colors;
   final int selectedColor;
-
   Product({
     required this.id,
     required this.name,

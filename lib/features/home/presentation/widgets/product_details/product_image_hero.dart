@@ -1,11 +1,8 @@
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
-
 class ProductImageHero extends StatelessWidget {
   final Product product;
-
   const ProductImageHero({super.key, required this.product});
-
   @override
   Widget build(BuildContext context) {
     return Expanded(

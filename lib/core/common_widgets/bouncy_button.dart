@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
-
 class BouncyButton extends StatefulWidget {
   final Widget child;
   final VoidCallback onTap;
   final List<Color>? gradientColors;
-
   const BouncyButton({
     super.key,
     required this.child,
     required this.onTap,
     this.gradientColors,
   });
-
   @override
   State<BouncyButton> createState() => _BouncyButtonState();
 }
-
 class _BouncyButtonState extends State<BouncyButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scale;
-
   @override
   void initState() {
     super.initState();
@@ -35,26 +30,21 @@ class _BouncyButtonState extends State<BouncyButton>
       end: 0.9,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   void _onTapDown(TapDownDetails details) {
     _controller.forward();
   }
-
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
     widget.onTap();
   }
-
   void _onTapCancel() {
     _controller.reverse();
   }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

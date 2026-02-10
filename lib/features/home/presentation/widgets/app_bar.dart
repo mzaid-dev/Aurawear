@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-
 class HomeAppBar extends StatefulWidget {
   const HomeAppBar({super.key});
-
   @override
   State<HomeAppBar> createState() => _HomeAppBarState();
 }
-
 class _HomeAppBarState extends State<HomeAppBar>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _opacityAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -30,13 +26,11 @@ class _HomeAppBarState extends State<HomeAppBar>
     );
     _controller.forward();
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return SlideTransition(

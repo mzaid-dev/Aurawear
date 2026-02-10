@@ -4,19 +4,15 @@ import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 class OnboardingPageThree extends StatefulWidget {
   const OnboardingPageThree({super.key});
-
   @override
   State<OnboardingPageThree> createState() => _OnboardingPageThreeState();
 }
-
 class _OnboardingPageThreeState extends State<OnboardingPageThree>
     with SingleTickerProviderStateMixin {
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -24,18 +20,15 @@ class _OnboardingPageThreeState extends State<OnboardingPageThree>
       vsync: this,
       duration: const Duration(milliseconds: 1500),
     )..repeat(reverse: true);
-
     _bounceAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
     );
   }
-
   @override
   void dispose() {
     _bounceController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,7 +38,6 @@ class _OnboardingPageThreeState extends State<OnboardingPageThree>
           Positioned.fill(
             child: Image.asset(AppAssets.splashBackground3, fit: BoxFit.cover),
           ),
-
           Positioned(
             bottom: 120,
             left: 26,

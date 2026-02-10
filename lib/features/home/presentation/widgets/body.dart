@@ -5,18 +5,14 @@ import 'package:aurawear/features/home/presentation/widgets/product_tile.dart';
 import 'package:aurawear/core/router/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 class HomeBody extends StatefulWidget {
   const HomeBody({super.key});
-
   @override
   State<HomeBody> createState() => _HomeBodyState();
 }
-
 class _HomeBodyState extends State<HomeBody>
     with SingleTickerProviderStateMixin {
   late AnimationController _staggerController;
-
   @override
   void initState() {
     super.initState();
@@ -26,7 +22,6 @@ class _HomeBodyState extends State<HomeBody>
     );
     _staggerController.forward();
   }
-
   Animation<Offset> _getCartBarAnimation() {
     return Tween<Offset>(begin: const Offset(0, 2), end: Offset.zero).animate(
       CurvedAnimation(
@@ -35,13 +30,11 @@ class _HomeBodyState extends State<HomeBody>
       ),
     );
   }
-
   @override
   void dispose() {
     _staggerController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -80,10 +73,8 @@ class _HomeBodyState extends State<HomeBody>
                   ],
                 ),
                 const SizedBox(height: 20),
-
                 const CustomChipTabBar(),
                 const SizedBox(height: 24),
-
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.only(bottom: 100),
@@ -104,7 +95,6 @@ class _HomeBodyState extends State<HomeBody>
                           curve: Curves.easeOutQuart,
                         ),
                       );
-
                       return FadeTransition(
                         opacity: animation,
                         child: SlideTransition(
@@ -128,7 +118,6 @@ class _HomeBodyState extends State<HomeBody>
                 ),
               ],
             ),
-
             Positioned(
               bottom: 30,
               child: SlideTransition(

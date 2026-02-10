@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'text_styles.dart';
-
-/// App theme configuration using Material 3 and custom design tokens.
 class AppTheme {
   AppTheme._();
-
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       fontFamily: AppTextStyles.fontFamily,
       scaffoldBackgroundColor: AppColors.background,
-
       colorScheme: const ColorScheme.light(
         primary: AppColors.primaryRose,
         onPrimary: AppColors.textWhite,
@@ -23,7 +19,6 @@ class AppTheme {
         error: AppColors.error,
         onError: AppColors.textWhite,
       ),
-
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -31,7 +26,6 @@ class AppTheme {
         iconTheme: IconThemeData(color: AppColors.textPrimary),
         titleTextStyle: AppTextStyles.headlineMedium,
       ),
-
       textTheme: const TextTheme(
         displayLarge: AppTextStyles.displayLarge,
         displayMedium: AppTextStyles.displayMedium,
@@ -43,7 +37,6 @@ class AppTheme {
         labelLarge: AppTextStyles.labelLarge,
         labelMedium: AppTextStyles.labelMedium,
       ),
-
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.accentDark,
@@ -56,7 +49,6 @@ class AppTheme {
           elevation: 0,
         ),
       ),
-
       cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         elevation: 0,

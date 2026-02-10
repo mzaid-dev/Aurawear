@@ -1,22 +1,17 @@
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
-
 class ProductTile extends StatefulWidget {
   final Product product;
   final VoidCallback onTap;
-
   const ProductTile({super.key, required this.product, required this.onTap});
-
   @override
   State<ProductTile> createState() => _ProductTileState();
 }
-
 class _ProductTileState extends State<ProductTile>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-
   @override
   void initState() {
     super.initState();
@@ -29,13 +24,11 @@ class _ProductTileState extends State<ProductTile>
       end: 0.95,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
-
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -57,7 +50,6 @@ class _ProductTileState extends State<ProductTile>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-
             children: [
               Expanded(
                 child: Hero(

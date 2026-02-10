@@ -6,14 +6,11 @@ import 'package:aurawear/features/splash/presentation/widgets/particle_painter.d
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
-
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _mainController;
@@ -21,49 +18,40 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _logoScale;
   late Animation<double> _contentOpacity;
   late Animation<double> _textSpacing;
-
   final List<Particle> _particles = [];
   Timer? _particleTimer;
-
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FlutterNativeSplash.remove();
     });
-
     _mainController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     );
-
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
     )..repeat(reverse: true);
-
     _logoScale = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainController,
         curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
       ),
     );
-
     _contentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainController,
         curve: const Interval(0.2, 0.8, curve: Curves.easeIn),
       ),
     );
-
     _textSpacing = Tween<double>(begin: 2.0, end: 8.0).animate(
       CurvedAnimation(
         parent: _mainController,
         curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
       ),
     );
-
     for (int i = 0; i < 20; i++) {
       _particles.add(Particle());
     }
@@ -75,20 +63,15 @@ class _SplashScreenState extends State<SplashScreen>
         }
       });
     });
-
     _startSequence();
   }
-
   void _startSequence() async {
     await _mainController.forward();
     if (!mounted) return;
-
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
-
     context.goNamed(AppRoutes.onboardingName);
   }
-
   @override
   void dispose() {
     _mainController.dispose();
@@ -96,7 +79,6 @@ class _SplashScreenState extends State<SplashScreen>
     _particleTimer?.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,12 +108,10 @@ class _SplashScreenState extends State<SplashScreen>
               );
             },
           ),
-
           CustomPaint(
             painter: ParticlePainter(_particles),
             size: Size.infinite,
           ),
-
           Center(
             child: AnimatedBuilder(
               animation: _mainController,
@@ -185,7 +165,6 @@ class _SplashScreenState extends State<SplashScreen>
                         ],
                       ),
                       const SizedBox(height: 40),
-
                       Text(
                         "AURAWEAR",
                         style: TextStyle(

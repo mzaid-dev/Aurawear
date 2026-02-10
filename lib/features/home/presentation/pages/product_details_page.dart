@@ -5,21 +5,16 @@ import 'package:aurawear/features/home/presentation/widgets/product_details/prod
 import 'package:aurawear/features/home/presentation/widgets/product_details/product_info_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 class ProductDetailsPage extends StatefulWidget {
   final Product product;
-
   const ProductDetailsPage({super.key, required this.product});
-
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
 }
-
 class _ProductDetailsPageState extends State<ProductDetailsPage>
     with SingleTickerProviderStateMixin {
   late Color selectedColor;
   late AnimationController _animationController;
-
   @override
   void initState() {
     super.initState();
@@ -30,13 +25,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
     );
     _animationController.forward();
   }
-
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,9 +54,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                 ],
               ),
             ),
-
             ProductImageHero(product: widget.product),
-
             ColorSelector(
               colors: widget.product.colors,
               selectedColor: selectedColor,
@@ -73,7 +64,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage>
                 });
               },
             ),
-
             ProductInfoSheet(
               product: widget.product,
               selectedColor: selectedColor,

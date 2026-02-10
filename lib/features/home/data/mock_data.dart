@@ -1,7 +1,6 @@
 import 'package:aurawear/core/constants/app_assets.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
-
 class MockData {
   static List<Product> get products => [
     Product(

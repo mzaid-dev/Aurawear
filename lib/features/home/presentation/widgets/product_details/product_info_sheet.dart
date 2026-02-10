@@ -4,19 +4,16 @@ import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:aurawear/core/router/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 class ProductInfoSheet extends StatelessWidget {
   final Product product;
   final Color selectedColor;
   final AnimationController animationController;
-
   const ProductInfoSheet({
     super.key,
     required this.product,
     required this.selectedColor,
     required this.animationController,
   });
-
   Animation<Offset> _getStaggerAnimation(int index) {
     return Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
       CurvedAnimation(
@@ -25,14 +22,12 @@ class ProductInfoSheet extends StatelessWidget {
       ),
     );
   }
-
   Animation<double> _getOpacityAnimation(int index) {
     return CurvedAnimation(
       parent: animationController,
       curve: Interval(0.4 + (index * 0.1), 1.0, curve: Curves.easeIn),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -99,7 +94,6 @@ class ProductInfoSheet extends StatelessWidget {
               ),
             ),
             const Spacer(),
-
             SlideTransition(
               position: _getStaggerAnimation(2),
               child: FadeTransition(

@@ -4,7 +4,6 @@ class AppRoutes {
   static const String homePath = '/home';
   static const String productDetailsPath = '/product-details';
   static const String threeDViewPath = '/three_d_view';
-
   static const String splashName = 'splash';
   static const String onboardingName = 'onboarding';
   static const String homeName = 'home';

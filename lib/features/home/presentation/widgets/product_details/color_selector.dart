@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-
 class ColorSelector extends StatelessWidget {
   final List<Color> colors;
   final Color selectedColor;
   final ValueChanged<Color> onColorSelected;
-
   const ColorSelector({
     super.key,
     required this.colors,
     required this.selectedColor,
     required this.onColorSelected,
   });
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,7 +35,6 @@ class ColorSelector extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildColorDot(Color color, {bool isSelected = false}) {
     return AnimatedScale(
       scale: isSelected ? 1.1 : 1,

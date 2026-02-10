@@ -4,29 +4,21 @@ import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // For ByteData
-import 'package:model_viewer_plus/model_viewer_plus.dart';
-import 'package:path_provider/path_provider.dart';
-
+import 'package:flutter/services.dart'; 
+import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 class ModelViewerWidget extends StatefulWidget {
   final Product product;
   const ModelViewerWidget({super.key, required this.product});
-
   @override
   State<ModelViewerWidget> createState() => _ModelViewerWidgetState();
 }
-
 class _ModelViewerWidgetState extends State<ModelViewerWidget>
     with SingleTickerProviderStateMixin {
   bool _isAutoRotate = true;
-  double _fov = 30;
   late AnimationController _animationController;
   late Animation<double> _expandAnimation;
   bool _isMenuOpen = false;
-  bool _isLoading = true;
-
-  String? _localModelPath;
-
+  final Flutter3DController _controller = Flutter3DController();
   @override
   void initState() {
     super.initState();
@@ -39,65 +31,12 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       curve: Curves.easeOutBack,
       reverseCurve: Curves.easeInBack,
     );
-
-    _prepareModel();
   }
-
-  Future<void> _prepareModel() async {
-    final String assetPath =
-        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
-
-    debugPrint('Preparing 3D model for path: $assetPath');
-
-    if (assetPath.startsWith('assets/')) {
-      try {
-        final byteData = await DefaultAssetBundle.of(context).load(assetPath);
-        final file = await _createTempFile(assetPath, byteData);
-
-        if (mounted) {
-          setState(() {
-            // On Windows, file:/// URLs often need three slashes and forward slashes
-            // Example: file:///C:/Users/...
-            final String normalizedPath = file.path.replaceAll('\\', '/');
-            _localModelPath = 'file:///$normalizedPath';
-            debugPrint('Local model path set to: $_localModelPath');
-            _isLoading = false;
-          });
-        }
-      } catch (e) {
-        debugPrint('Error loading 3D model from assets: $e');
-        if (mounted) {
-          setState(() {
-            _localModelPath = assetPath;
-            _isLoading = false;
-          });
-        }
-      }
-    } else {
-      if (mounted) {
-        setState(() {
-          _localModelPath = assetPath;
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<io.File> _createTempFile(String name, ByteData data) async {
-    final directory = await getTemporaryDirectory();
-    final fileName = name.split('/').last;
-    final file = io.File('${directory.path}/$fileName');
-    await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
-    debugPrint('Temp file created at: ${file.path}');
-    return file;
-  }
-
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
-
   void _toggleMenu() {
     setState(() {
       _isMenuOpen = !_isMenuOpen;
@@ -108,33 +47,21 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       }
     });
   }
-
   void _zoomIn() {
-    setState(() {
-      _fov = (_fov - 5).clamp(10, 60);
-    });
+    _controller.setCameraOrbit(0, 0, -5);
   }
-
   void _zoomOut() {
-    setState(() {
-      _fov = (_fov + 5).clamp(10, 60);
-    });
+    _controller.setCameraOrbit(0, 0, 5);
   }
-
   void _toggleAutoRotate() {
     setState(() {
       _isAutoRotate = !_isAutoRotate;
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    // Determine the source to use
     final String modelSrc =
-        _localModelPath ??
-        widget.product.modelPath ??
-        'assets/3d_models/headphone.glb';
-
+        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
     return Scaffold(
       backgroundColor: AppColors.homeBg,
       body: Stack(
@@ -178,37 +105,17 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                         topRight: Radius.circular(40),
                       ),
                     ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: ModelViewer(
-                            key: ValueKey(modelSrc),
-                            backgroundColor: Colors.transparent,
-                            src: modelSrc,
-                            alt: "A 3D model of ${widget.product.name}",
-                            autoRotate: _isAutoRotate,
-                            cameraControls: true,
-                            ar: !io.Platform.isWindows, // Disable AR on Windows
-                            autoPlay: true,
-                            shadowIntensity: 1,
-                            disableZoom: false,
-                            fieldOfView: "${_fov}deg",
-                          ),
-                        ),
-                        if (_isLoading)
-                          const Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primaryRose,
-                            ),
-                          ),
-                      ],
+                    child: Center(
+                      child: Flutter3DViewer(
+                        src: modelSrc,
+                        controller: _controller,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-
           Positioned(
             bottom: 16,
             right: 16,
@@ -254,7 +161,6 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       ),
     );
   }
-
   Widget _buildCircularButton({
     required int index,
     required IconData icon,
@@ -264,7 +170,6 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
     const double distance = 100.0;
     final double angle = 180 + (index * 45);
     final double radians = angle * math.pi / 180;
-
     return AnimatedBuilder(
       animation: _expandAnimation,
       builder: (context, child) {

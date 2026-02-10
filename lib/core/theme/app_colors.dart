@@ -1,42 +1,31 @@
 import 'package:flutter/material.dart';
-
-/// App color palette based on the "Dusty Rose" design aesthetic.
 class AppColors {
   AppColors._();
-
   static const Color primaryRose = Color(0xFFE35858);
   static const Color primaryRoseLight = Color(0xFFFEE1DD);
   static const Color primaryRoseDark = Color(0xFFC04848);
-
   static const Color gradientStart = Color(0xFFC3332D);
   static const Color gradientEnd = Color(0xFFE6C3BD);
-
   static const Color mutedRoseText = Color(0xFFF89890);
-
   static const Color homeBg = Color(0xFFFDBDB5);
   static const Color chipInactive = Colors.white;
   static const Color chipActive = Colors.black;
   static const Color searchIcon = Colors.black;
   static const Color iconBg = Colors.white;
   static const Color productCardBg = Color(0xFFF2D0CB);
-
   static const Color background = Color(0xFFFEE1DD);
   static const Color surface = Colors.white;
   static const Color cardBackground = Color(0xFFFFFFFF);
-
   static const Color textPrimary = Color(0xFF2D2D2D);
   static const Color textBlack = Color(0xFF1A1A1A);
   static const Color textSecondary = Color(0xFF757575);
   static const Color textLight = Color(0xFFAAAAAA);
   static const Color textWhite = Colors.white;
-
   static const Color accentDark = Color(0xFF1A1A1A);
   static const Color accentRose = Color(0xFFE35858);
-
   static const Color error = Color(0xFFD32F2F);
   static const Color success = Color(0xFF388E3C);
   static const Color warning = Color(0xFFFBC02D);
-
   static Color shadowLight = Colors.black.withValues(alpha: 0.05);
   static Color shadowMedium = Colors.black.withValues(alpha: 0.1);
   static Color overlay = Colors.black.withValues(alpha: 0.4);

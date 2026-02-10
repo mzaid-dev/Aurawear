@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-
 class CustomChipTabBar extends StatefulWidget {
   const CustomChipTabBar({super.key});
-
   @override
   State<CustomChipTabBar> createState() => _CustomChipTabBarState();
 }
-
 class _CustomChipTabBarState extends State<CustomChipTabBar> {
   final List<String> categories = ['All', 'Headphones', 'Speakers'];
   int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -26,7 +22,6 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
                   border: Border.all(color: Colors.black12, width: 1),
                 ),
               ),
-
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.elasticOut,
@@ -49,7 +44,6 @@ class _CustomChipTabBarState extends State<CustomChipTabBar> {
                   ),
                 ),
               ),
-
               Row(
                 children: List.generate(categories.length, (index) {
                   final isSelected = _selectedIndex == index;

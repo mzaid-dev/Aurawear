@@ -8,7 +8,6 @@ import 'package:aurawear/features/splash/presentation/view/splash_screen.dart'
     as splash;
 import 'package:aurawear/core/router/app_routes.dart';
 import 'package:go_router/go_router.dart';
-
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.splashPath,
   routes: [
