@@ -66,3 +66,5 @@ inno_bundle:
   executable: aurawear.exe
   publisher: suleh
   version: 1.0.0
+  languages:
+    - english
