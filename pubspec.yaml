@@ -62,4 +62,7 @@ flutter_native_splash:
   web: false
 inno_bundle:
   id: fb049d50-0650-11f1-83c2-dfccb947d9fe
+  name: Aurawear
+  executable: aurawear.exe
   publisher: suleh
+  version: 1.0.0

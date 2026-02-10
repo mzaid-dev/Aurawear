@@ -13,15 +13,15 @@
 
   ## Aurawear Demo
 
-  **Download the Release Build**
+  **Get the Latest Production Build**
   <br>
-  
-  <a href="https://github.com/mzaid-dev/Aurawear/releases/download/v1.0/app-release.apk">
-    <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="24" alt="Download APK" />
+
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest">
+    <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" height="35" alt="Download APK" />
   </a>
   &nbsp;
-  <a href="https://github.com/mzaid-dev/Aurawear/releases/download/v1.0/Aurawear-Windows.zip">
-    <img src="https://img.shields.io/badge/Windows-Download_.EXE_(Zip)-0078D6?style=social&logo=windows&logoColor=0078D6" height="24" alt="Download Windows EXE" />
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest">
+    <img src="https://img.shields.io/badge/Windows-Download_Installer-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="35" alt="Download Windows EXE" />
   </a>
 
 </div>
@@ -31,15 +31,15 @@
 ## 📸 Interactive Mockups
 
 <div style="overflow-x: auto; white-space: nowrap; padding-bottom: 20px;">
-  <img src="screenshots\splash.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\onboarding1.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\onboarding2.png" height="400" alt="onboarding_screen_2" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\onboarding3.png" height="400" alt="onboarding_screen_3" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\home.png" height="400" alt="home" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\product details.png" height="400" alt="Product Details" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\model_view1.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\model_view2.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
-  <img src="screenshots\model_view3.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/splash.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/onboarding1.png" height="400" alt="onboarding_screen_1" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/onboarding2.png" height="400" alt="onboarding_screen_2" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/onboarding3.png" height="400" alt="onboarding_screen_3" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/home.png" height="400" alt="home" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/product details.png" height="400" alt="Product Details" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/model_view1.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/model_view2.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
+  <img src="screenshots/model_view3.png" height="400" alt="model_view" style="border-radius: 20px; margin-right: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" />
 </div>
 
 <br>
@@ -70,7 +70,7 @@ It is designed for developers and designers who want to explore **3D optimizatio
     </td>
     <td width="50%" valign="top">
       <h3>👓 Interactive 3D</h3>
-      <p>inspect products in real-time. Rotate, zoom, and explore every detail using our optimized WebGL-based viewer.</p>
+      <p>Inspect products in real-time. Rotate, zoom, and explore every detail using our optimized native-capable viewer.</p>
     </td>
   </tr>
   <tr>
@@ -95,7 +95,7 @@ It is designed for developers and designers who want to explore **3D optimizatio
 
   | Core Tech | UI Utilities |
   | :--- | :--- |
-  | **Flutter SDK 3.10+** | `model_viewer_plus` (3D) |
+  | **Flutter SDK 3.10+** | `flutter_3d_controller` (3D) |
   | **Dart 3.0+** | `liquid_swipe` (Gestures) |
   | **Clean Code Principles** | `google_fonts` (Typography) |
 
