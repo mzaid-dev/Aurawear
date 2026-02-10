@@ -4,14 +4,18 @@ import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:flutter_3d_controller/flutter_3d_controller.dart';
+import 'package:path_provider/path_provider.dart';
+
 class ModelViewerWidget extends StatefulWidget {
   final Product product;
   const ModelViewerWidget({super.key, required this.product});
+
   @override
   State<ModelViewerWidget> createState() => _ModelViewerWidgetState();
 }
+
 class _ModelViewerWidgetState extends State<ModelViewerWidget>
     with SingleTickerProviderStateMixin {
   bool _isAutoRotate = true;
@@ -19,6 +23,9 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
   late Animation<double> _expandAnimation;
   bool _isMenuOpen = false;
   final Flutter3DController _controller = Flutter3DController();
+  String? _stagedModelPath;
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -31,12 +38,59 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       curve: Curves.easeOutBack,
       reverseCurve: Curves.easeInBack,
     );
+    _prepareModel();
   }
+
+  Future<void> _prepareModel() async {
+    final String assetPath =
+        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
+
+    if (io.Platform.isWindows) {
+      try {
+        final directory = await getTemporaryDirectory();
+        final fileName = assetPath.split('/').last;
+        final file = io.File('${directory.path}/$fileName');
+
+        if (!await file.exists()) {
+          final byteData = await rootBundle.load(assetPath);
+          await file.writeAsBytes(
+            byteData.buffer.asUint8List(
+              byteData.offsetInBytes,
+              byteData.lengthInBytes,
+            ),
+          );
+        }
+
+        if (mounted) {
+          setState(() {
+            _stagedModelPath = file.path;
+            _isLoading = false;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _stagedModelPath = assetPath;
+            _isLoading = false;
+          });
+        }
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _stagedModelPath = assetPath;
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
   }
+
   void _toggleMenu() {
     setState(() {
       _isMenuOpen = !_isMenuOpen;
@@ -47,21 +101,23 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       }
     });
   }
+
   void _zoomIn() {
     _controller.setCameraOrbit(0, 0, -5);
   }
+
   void _zoomOut() {
     _controller.setCameraOrbit(0, 0, 5);
   }
+
   void _toggleAutoRotate() {
     setState(() {
       _isAutoRotate = !_isAutoRotate;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    final String modelSrc =
-        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
     return Scaffold(
       backgroundColor: AppColors.homeBg,
       body: Stack(
@@ -106,10 +162,14 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                       ),
                     ),
                     child: Center(
-                      child: Flutter3DViewer(
-                        src: modelSrc,
-                        controller: _controller,
-                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: AppColors.primaryRose,
+                            )
+                          : Flutter3DViewer(
+                              src: _stagedModelPath!,
+                              controller: _controller,
+                            ),
                     ),
                   ),
                 ),
@@ -161,6 +221,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       ),
     );
   }
+
   Widget _buildCircularButton({
     required int index,
     required IconData icon,
