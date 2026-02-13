@@ -27,6 +27,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
   final Flutter3DController _controller = Flutter3DController();
   final Windows3DController _windowsController = Windows3DController();
   String? _stagedModelPath;
+  bool _hasError = false;
   bool _isLoading = true;
 
   @override
@@ -55,13 +56,23 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
         final file = io.File('${directory.path}/$fileName');
 
         if (!await file.exists()) {
-          final byteData = await rootBundle.load(assetPath);
-          await file.writeAsBytes(
-            byteData.buffer.asUint8List(
-              byteData.offsetInBytes,
-              byteData.lengthInBytes,
-            ),
-          );
+          try {
+            final byteData = await rootBundle.load(assetPath);
+            await file.writeAsBytes(
+              byteData.buffer.asUint8List(
+                byteData.offsetInBytes,
+                byteData.lengthInBytes,
+              ),
+            );
+          } catch (e) {
+            if (mounted) {
+              setState(() {
+                _hasError = true;
+                _isLoading = false;
+              });
+            }
+            return;
+          }
         }
 
         if (mounted) {
@@ -73,7 +84,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
       } catch (e) {
         if (mounted) {
           setState(() {
-            _stagedModelPath = assetPath;
+            _hasError = true;
             _isLoading = false;
           });
         }
@@ -179,6 +190,58 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
                       child: _isLoading
                           ? const CircularProgressIndicator(
                               color: AppColors.primaryRose,
+                            )
+                          : _hasError
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.broken_image_outlined,
+                                  color: Colors.grey,
+                                  size: 48,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  "Unable to Load 3D Model",
+                                  style: AppTextStyles.headlineMedium.copyWith(
+                                    color: AppColors.textBlack,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "We encountered a technical issue retrieving this asset.\nPlease try again later.",
+                                  textAlign: TextAlign.center,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: Colors.grey,
+                                    height: 1.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _hasError = false;
+                                      _isLoading = true;
+                                    });
+                                    _prepareModel();
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.primaryRose,
+                                    side: const BorderSide(
+                                      color: AppColors.primaryRose,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 32,
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  child: const Text("Retry"),
+                                ),
+                              ],
                             )
                           : (!kIsWeb && io.Platform.isWindows)
                           ? WindowsModelViewer(

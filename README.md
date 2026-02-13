@@ -14,15 +14,19 @@
   ## Aurawear Demo
 
   **Get the Latest Production Build**
-  <br>
-
-  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest">
-    <img src="https://img.shields.io/badge/Android-Download_APK-3DDC84?style=for-the-badge&logo=android&logoColor=white" height="35" alt="Download APK" />
+   <br>
+  <a href="releases/app-release.apk">
+    <img src="https://img.shields.io/badge/Android-APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="24" alt="Download APK" />
   </a>
   &nbsp;
-  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest">
-    <img src="https://img.shields.io/badge/Windows-Download_Installer-0078D6?style=for-the-badge&logo=windows&logoColor=white" height="35" alt="Download Windows EXE" />
+  <a href="releases/windows-release.zip">
+    <img src="https://img.shields.io/badge/Windows-EXE-0078D6?style=social&logo=windows&logoColor=0078D6" height="24" alt="Download Windows" />
   </a>
+  &nbsp;
+  <a href="releases/linux-release.zip">
+    <img src="https://img.shields.io/badge/Linux-Bundle-FCC624?style=social&logo=linux&logoColor=FCC624" height="24" alt="Download Linux" />
+  </a>
+
 
 </div>
 

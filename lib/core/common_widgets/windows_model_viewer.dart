@@ -91,7 +91,6 @@ class _WindowsModelViewerState extends State<WindowsModelViewer> {
       }
     } catch (e) {
       debugPrint("Local Server Start Error: $e");
-      // If port is taken, try another one or handle it
       if (mounted) {
         setState(() {
           _isServerStarted = true;

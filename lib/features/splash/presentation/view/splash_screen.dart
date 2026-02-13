@@ -121,7 +121,6 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Ensure a solid black background exists behind everything
           Container(color: Colors.black),
           AnimatedBuilder(
             animation: _exitController,
