@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_frame/device_frame.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
+
 class AurawearApp extends StatelessWidget {
   const AurawearApp({super.key});
   @override
@@ -12,6 +15,9 @@ class AurawearApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       routerConfig: router,
       builder: (context, child) {
+        if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+          return child!;
+        }
         return DeviceFrame(
           device: Devices.ios.iPhone13ProMax,
           isFrameVisible: true,

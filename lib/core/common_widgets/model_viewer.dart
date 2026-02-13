@@ -48,7 +48,7 @@ class _ModelViewerWidgetState extends State<ModelViewerWidget>
     final String assetPath =
         widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
 
-    if (!kIsWeb && io.Platform.isWindows) {
+    if (!kIsWeb) {
       try {
         final directory = await getTemporaryDirectory();
         final fileName = assetPath.split('/').last;
