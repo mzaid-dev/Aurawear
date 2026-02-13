@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:aurawear/core/common_widgets/model_viewer.dart';
 import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:aurawear/features/home/presentation/pages/home_page.dart';
@@ -8,6 +9,7 @@ import 'package:aurawear/features/splash/presentation/view/splash_screen.dart'
     as splash;
 import 'package:aurawear/core/router/app_routes.dart';
 import 'package:go_router/go_router.dart';
+
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.splashPath,
   routes: [
@@ -19,7 +21,14 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: AppRoutes.onboardingPath,
       name: AppRoutes.onboardingName,
-      builder: (context, state) => const onboarding.OnboardingScreen(),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const onboarding.OnboardingScreen(),
+        transitionDuration: const Duration(milliseconds: 800),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
     ),
     GoRoute(
       path: AppRoutes.homePath,

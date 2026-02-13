@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Windows3DController {
   InAppWebViewController? _webViewController;
@@ -23,7 +25,6 @@ class Windows3DController {
         const mv = document.querySelector('model-viewer');
         if (mv) {
           const orbit = mv.getCameraOrbit();
-          // radius is the 3rd element in the orbit object
           mv.cameraOrbit = `\${orbit.theta}rad \${orbit.phi}rad \${orbit.radius + $radiusDelta}m`;
         }
       })();
@@ -64,15 +65,67 @@ class WindowsModelViewer extends StatefulWidget {
 }
 
 class _WindowsModelViewerState extends State<WindowsModelViewer> {
+  InAppLocalhostServer? _localhostServer;
+  bool _isServerStarted = false;
+  final int _port = 8080;
+
+  @override
+  void initState() {
+    super.initState();
+    _initServer();
+  }
+
+  Future<void> _initServer() async {
+    try {
+      final directory = await getTemporaryDirectory();
+      _localhostServer = InAppLocalhostServer(
+        port: _port,
+        documentRoot: directory.path,
+      );
+      await _localhostServer!.start();
+
+      if (mounted) {
+        setState(() {
+          _isServerStarted = true;
+        });
+      }
+    } catch (e) {
+      debugPrint("Local Server Start Error: $e");
+      // If port is taken, try another one or handle it
+      if (mounted) {
+        setState(() {
+          _isServerStarted = true;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _localhostServer?.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String fileUri = Uri.file(widget.selectedModel).toString();
+    if (!_isServerStarted) {
+      return const Center(
+        child: CircularProgressIndicator(color: Color(0xFFE35858)),
+      );
+    }
+
+    final String fileName = widget.selectedModel
+        .split(Platform.pathSeparator)
+        .last;
+    final String modelUrl = "http://localhost:$_port/$fileName";
 
     final String htmlContent =
         '''
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body, html { 
@@ -93,7 +146,8 @@ class _WindowsModelViewerState extends State<WindowsModelViewer> {
 </head>
 <body>
     <model-viewer 
-        src="$fileUri" 
+        id="mv-element"
+        src="$modelUrl" 
         ${widget.autoRotate ? 'auto-rotate' : ''}
         camera-controls 
         interaction-prompt="auto"
@@ -107,17 +161,26 @@ class _WindowsModelViewerState extends State<WindowsModelViewer> {
 ''';
 
     return InAppWebView(
-      initialData: InAppWebViewInitialData(data: htmlContent),
+      initialData: InAppWebViewInitialData(
+        data: htmlContent,
+        mimeType: 'text/html',
+        encoding: 'utf-8',
+        baseUrl: WebUri("http://localhost:$_port/"),
+      ),
       initialSettings: InAppWebViewSettings(
         transparentBackground: true,
         supportZoom: false,
         isInspectable: true,
+        allowFileAccessFromFileURLs: true,
+        allowUniversalAccessFromFileURLs: true,
       ),
       onWebViewCreated: (controller) {
         widget.controller?._setWebViewController(controller);
       },
       onConsoleMessage: (controller, consoleMessage) {
-        debugPrint('WebView Console: ${consoleMessage.message}');
+        debugPrint(
+          'WebView Console [${consoleMessage.messageLevel}]: ${consoleMessage.message}',
+        );
       },
       onLoadStop: (controller, url) {
         widget.controller?._setWebViewController(controller);
