@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 import 'app.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
-      size: Size(480, 1020),
+      size: Size(450, 950), 
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
@@ -23,7 +21,6 @@ void main() async {
       await windowManager.focus();
     });
   }
-
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

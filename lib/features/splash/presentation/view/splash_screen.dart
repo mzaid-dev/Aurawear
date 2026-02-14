@@ -6,86 +6,69 @@ import 'package:aurawear/features/splash/presentation/widgets/splash_content.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
-
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _exitController;
   late Animation<double> _exitScale;
   late Animation<double> _exitOpacity;
-
   late AnimationController _mainController;
   late AnimationController _pulseController;
-
   late Animation<double> _logoScale;
   late Animation<double> _contentOpacity;
   late Animation<double> _textSpacing;
-
   final List<Particle> _particles = [];
   Timer? _particleTimer;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FlutterNativeSplash.remove();
     });
-
     _mainController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     );
-
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
     )..repeat(reverse: true);
-
     _exitController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-
     _exitScale = Tween<double>(begin: 1.0, end: 1.5).animate(
       CurvedAnimation(parent: _exitController, curve: Curves.easeInCubic),
     );
-
     _exitOpacity = Tween<double>(
       begin: 1.0,
       end: 0.0,
     ).animate(CurvedAnimation(parent: _exitController, curve: Curves.easeIn));
-
     _logoScale = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainController,
         curve: const Interval(0.0, 0.6, curve: Curves.easeOutCubic),
       ),
     );
-
     _contentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _mainController,
         curve: const Interval(0.2, 0.8, curve: Curves.easeIn),
       ),
     );
-
     _textSpacing = Tween<double>(begin: 2.0, end: 8.0).animate(
       CurvedAnimation(
         parent: _mainController,
         curve: const Interval(0.3, 1.0, curve: Curves.easeOut),
       ),
     );
-
     for (int i = 0; i < 20; i++) {
       _particles.add(Particle());
     }
-
     _particleTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (!mounted) return;
       setState(() {
@@ -94,10 +77,8 @@ class _SplashScreenState extends State<SplashScreen>
         }
       });
     });
-
     _startSequence();
   }
-
   void _startSequence() async {
     await _mainController.forward();
     if (!mounted) return;
@@ -105,7 +86,6 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
     context.goNamed(AppRoutes.onboardingName);
   }
-
   @override
   void dispose() {
     _mainController.dispose();
@@ -114,7 +94,6 @@ class _SplashScreenState extends State<SplashScreen>
     _particleTimer?.cancel();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

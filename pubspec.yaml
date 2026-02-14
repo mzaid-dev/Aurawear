@@ -12,8 +12,8 @@ dependencies:
   device_frame: ^1.4.0
   liquid_swipe: ^3.1.0
   glow_container: ^1.0.1
-  flutter_3d_controller: ^1.2.1
-  flutter_inappwebview: ^6.1.5
+  model_viewer_plus: ^1.10.0
+  webview_windows: ^0.4.0
   flutter_native_splash: ^2.4.4
   path_provider: ^2.1.2
   window_manager: ^0.5.1
@@ -50,14 +50,14 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: "assets/icons/appIconwithbg.png"
-    background_color: "#FFE7E4"
-    theme_color: "#FFE7E4"
+    background_color: "#FFFFFF"
+    theme_color: "#E35858"
   windows:
     generate: true
     image_path: "assets/icons/appIconwithbg.png"
     icon_size: 48
 flutter_native_splash:
-  color: "#000000"
+  color: "#E35858"
   image: assets/icons/appIcon.png
   android: true
   ios: true

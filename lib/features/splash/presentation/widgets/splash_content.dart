@@ -8,7 +8,6 @@ class SplashContent extends StatelessWidget {
   final Animation<double> logoScale;
   final Animation<double> contentOpacity;
   final Animation<double> textSpacing;
-
   const SplashContent({
     super.key,
     required this.mainController,
@@ -17,7 +16,6 @@ class SplashContent extends StatelessWidget {
     required this.contentOpacity,
     required this.textSpacing,
   });
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -91,6 +89,7 @@ class SplashContent extends StatelessWidget {
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 4,
+                    fontFamily: 'Poppins',
                   ),
                 ),
               ],

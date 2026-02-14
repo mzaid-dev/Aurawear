@@ -6,9 +6,7 @@ import 'window_controls.dart';
 
 class DesktopWindowWrapper extends StatelessWidget {
   final Widget child;
-
   const DesktopWindowWrapper({super.key, required this.child});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,13 +29,11 @@ class DesktopWindowWrapper extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
-                // The child is the DeviceFrame which has its own rounded corners,
-                // but we clip here just in case to match the shadow/frame.
                 child: child,
               ),
             ),
           ),
-          const SizedBox(height: 20), // Bottom breathing room
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -46,7 +42,6 @@ class DesktopWindowWrapper extends StatelessWidget {
 
 class _SimulatorHeader extends StatelessWidget {
   const _SimulatorHeader();
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -71,26 +66,20 @@ class _SimulatorHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: [
-              // 1. Controls (Traffic Lights)
               const MacWindowControls(),
-
-              // 2. Device Name (Centered)
               Expanded(
                 child: Center(
                   child: Text(
-                    "iPhone 15 Pro - iOS 17.0",
+                    "iPhone 13 Pro Max - iOS 17.0",
                     style: TextStyle(
                       color: Colors.grey[400],
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      fontFamily:
-                          'SF Pro Display', // Default fallback usually OK
+                      fontFamily: 'Poppins',
                     ),
                   ),
                 ),
               ),
-
-              // 3. Toolbar Actions
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -105,13 +94,13 @@ class _SimulatorHeader extends StatelessWidget {
                   _ToolbarButton(
                     icon: Icons.camera_alt_outlined,
                     tooltip: "Screenshot",
-                    onPressed: () {}, // Dummy
+                    onPressed: () {},
                   ),
                   const SizedBox(width: 12),
                   _ToolbarButton(
                     icon: Icons.rotate_right_rounded,
                     tooltip: "Rotate",
-                    onPressed: () {}, // Dummy
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -127,20 +116,17 @@ class _ToolbarButton extends StatefulWidget {
   final IconData icon;
   final String tooltip;
   final VoidCallback onPressed;
-
   const _ToolbarButton({
     required this.icon,
     required this.tooltip,
     required this.onPressed,
   });
-
   @override
   State<_ToolbarButton> createState() => _ToolbarButtonState();
 }
 
 class _ToolbarButtonState extends State<_ToolbarButton> {
   bool _isHovering = false;
-
   @override
   Widget build(BuildContext context) {
     return MouseRegion(

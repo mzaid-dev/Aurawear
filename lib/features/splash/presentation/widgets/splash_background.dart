@@ -1,17 +1,14 @@
 import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/features/splash/presentation/widgets/particle_painter.dart';
 import 'package:flutter/material.dart';
-
 class SplashBackground extends StatelessWidget {
   final AnimationController pulseController;
   final List<Particle> particles;
-
   const SplashBackground({
     super.key,
     required this.pulseController,
     required this.particles,
   });
-
   @override
   Widget build(BuildContext context) {
     return Stack(
