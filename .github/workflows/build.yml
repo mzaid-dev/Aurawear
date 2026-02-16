@@ -19,11 +19,13 @@ jobs:
         run: flutter pub get
       - name: Build APK
         run: flutter build apk --release
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk Aurawear-Android-ARM64.apk
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: Aurawear-Android-ARM64
+          path: Aurawear-Android-ARM64.apk
   build-windows:
     runs-on: windows-latest
     steps:
@@ -37,11 +39,16 @@ jobs:
         run: flutter build windows --release
       - name: Build Windows Installer (EXE)
         run: dart run inno_bundle --release
+      - name: Rename Windows Installer
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path build/windows/x64/installer/Release/*.exe | Select-Object -First 1
+          Move-Item -Path $installer.FullName -Destination "Aurawear-Windows-x64-Installer.exe"
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Aurawear-Installer
-          path: build/windows/x64/installer/Release/*.exe
+          name: Aurawear-Windows-x64-Installer
+          path: Aurawear-Windows-x64-Installer.exe
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -59,37 +66,39 @@ jobs:
         run: flutter pub get
       - name: Build Linux Release
         run: flutter build linux --release
+      - name: Zip Linux Release
+        run: |
+          cd build/linux/x64/release/bundle/
+          zip -r ../../../../../Aurawear-Linux-x64.zip .
+          cd ../../../../../
       - name: Upload Linux Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: linux-release
-          path: build/linux/x64/release/bundle/
+          name: Aurawear-Linux-x64
+          path: Aurawear-Linux-x64.zip
   create-release:
     needs: [build-android, build-windows, build-linux]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Download APK
+      - name: Download Android
         uses: actions/download-artifact@v4
         with:
-          name: app-release
-      - name: Download Windows Installer
+          name: Aurawear-Android-ARM64
+      - name: Download Windows
         uses: actions/download-artifact@v4
         with:
-          name: Aurawear-Installer
-      - name: Download Linux Artifact
+          name: Aurawear-Windows-x64-Installer
+      - name: Download Linux
         uses: actions/download-artifact@v4
         with:
-          name: linux-release
-          path: linux-release
-      - name: Zip Linux Release
-        run: zip -r linux-release.zip linux-release
+          name: Aurawear-Linux-x64
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            app-release.apk
-            *.exe
-            linux-release.zip
+            Aurawear-Android-ARM64.apk
+            Aurawear-Windows-x64-Installer.exe
+            Aurawear-Linux-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

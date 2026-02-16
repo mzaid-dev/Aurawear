@@ -15,16 +15,16 @@
 
   **Get the Latest Production Build**
    <br>
-  <a href="releases/app-release.apk">
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest/download/Aurawear-Android-ARM64.apk">
     <img src="https://img.shields.io/badge/Android-APK-3DDC84?style=social&logo=android&logoColor=3DDC84" height="24" alt="Download APK" />
   </a>
   &nbsp;
-  <a href="releases/windows-release.zip">
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest/download/Aurawear-Windows-x64-Installer.exe">
     <img src="https://img.shields.io/badge/Windows-EXE-0078D6?style=social&logo=windows&logoColor=0078D6" height="24" alt="Download Windows" />
   </a>
   &nbsp;
-  <a href="releases/linux-release.zip">
-    <img src="https://img.shields.io/badge/Linux-Bundle-FCC624?style=social&logo=linux&logoColor=FCC624" height="24" alt="Download Linux" />
+  <a href="https://github.com/mzaid-dev/Aurawear/releases/latest/download/Aurawear-Linux-x64.zip">
+    <img src="https://img.shields.io/badge/Linux-ZIP-FCC624?style=social&logo=linux&logoColor=FCC624" height="24" alt="Download Linux" />
   </a>
 
 
