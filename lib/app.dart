@@ -2,9 +2,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_frame/device_frame.dart';
-import 'core/theme/app_theme.dart';
-import 'core/desktop/desktop_shell.dart';
-import 'core/router/app_router.dart';
+import 'core/theme/index.dart';
+import 'core/device_simulator/device_simulator.dart';
+import 'core/router/index.dart';
+
 class AurawearApp extends StatelessWidget {
   const AurawearApp({super.key});
   @override
@@ -26,7 +27,7 @@ class AurawearApp extends StatelessWidget {
         );
         if (!kIsWeb &&
             (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
-          return DesktopWindowWrapper(child: deviceFrame);
+          return DeviceSimulatorFrame(child: deviceFrame);
         }
         return deviceFrame;
       },

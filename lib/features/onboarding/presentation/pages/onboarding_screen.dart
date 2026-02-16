@@ -3,12 +3,14 @@ import 'onboarding_page_one.dart';
 import 'onboarding_page_two.dart';
 import 'onboarding_page_three.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
-import 'package:aurawear/core/theme/app_colors.dart';
+import 'package:aurawear/core/theme/index.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
+
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final LiquidController _liquidController = LiquidController();
   int page = 0;
@@ -54,6 +56,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
     );
   }
+
   Widget _buildDot(int index) {
     double size = page == index ? 25 : 8;
     Color color = page == index ? AppColors.primaryRose : Colors.grey;

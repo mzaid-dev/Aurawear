@@ -1,6 +1,7 @@
-import 'package:aurawear/core/theme/text_styles.dart';
-import 'package:aurawear/features/home/domain/models/product.dart';
+import 'package:aurawear/core/theme/index.dart';
+import 'package:aurawear/features/home/domain/home_domain.dart';
 import 'package:flutter/material.dart';
+
 class ProductTile extends StatefulWidget {
   final Product product;
   final VoidCallback onTap;
@@ -8,6 +9,7 @@ class ProductTile extends StatefulWidget {
   @override
   State<ProductTile> createState() => _ProductTileState();
 }
+
 class _ProductTileState extends State<ProductTile>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
@@ -24,11 +26,13 @@ class _ProductTileState extends State<ProductTile>
       end: 0.95,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

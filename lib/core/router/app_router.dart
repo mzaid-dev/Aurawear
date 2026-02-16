@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:aurawear/core/common_widgets/model_viewer.dart';
-import 'package:aurawear/features/home/domain/models/product.dart';
-import 'package:aurawear/features/home/presentation/pages/home_page.dart';
-import 'package:aurawear/features/home/presentation/pages/product_details_page.dart';
-import 'package:aurawear/features/onboarding/presentation/pages/onboarding_screen.dart'
+import 'package:aurawear/core/common_widgets/index.dart';
+import 'package:aurawear/features/home/domain/home_domain.dart';
+import 'package:aurawear/features/home/presentation/home_presentation.dart';
+import 'package:aurawear/features/onboarding/presentation/onboarding_presentation.dart'
     as onboarding;
-import 'package:aurawear/features/splash/presentation/view/splash_screen.dart'
+import 'package:aurawear/features/splash/presentation/splash_presentation.dart'
     as splash;
-import 'package:aurawear/core/router/app_routes.dart';
+import 'package:aurawear/core/router/index.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 final GoRouter router = GoRouter(
   initialLocation: AppRoutes.splashPath,
   routes: [

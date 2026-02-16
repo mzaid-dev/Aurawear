@@ -1,16 +1,19 @@
 import 'dart:async';
-import 'package:aurawear/core/router/app_routes.dart';
+import 'package:flutter/foundation.dart';
+import 'package:aurawear/core/router/index.dart';
 import 'package:aurawear/features/splash/presentation/widgets/particle_painter.dart';
 import 'package:aurawear/features/splash/presentation/widgets/splash_background.dart';
 import 'package:aurawear/features/splash/presentation/widgets/splash_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
+
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _exitController;
@@ -79,13 +82,24 @@ class _SplashScreenState extends State<SplashScreen>
     });
     _startSequence();
   }
+
   void _startSequence() async {
-    await _mainController.forward();
+
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      _mainController.value = 1.0;
+
+      await Future.delayed(const Duration(milliseconds: 100));
+    } else {
+      await _mainController.forward();
+    }
+
     if (!mounted) return;
     await _exitController.forward();
     if (!mounted) return;
     context.goNamed(AppRoutes.onboardingName);
   }
+
   @override
   void dispose() {
     _mainController.dispose();
@@ -94,6 +108,7 @@ class _SplashScreenState extends State<SplashScreen>
     _particleTimer?.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

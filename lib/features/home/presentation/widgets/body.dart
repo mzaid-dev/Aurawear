@@ -1,15 +1,16 @@
-import 'package:aurawear/core/theme/text_styles.dart';
-import 'package:aurawear/features/home/data/mock_data.dart';
-import 'package:aurawear/features/home/presentation/widgets/categories_tab_bar.dart';
-import 'package:aurawear/features/home/presentation/widgets/product_tile.dart';
-import 'package:aurawear/core/router/app_routes.dart';
+import 'package:aurawear/core/theme/index.dart';
+import 'package:aurawear/features/home/data/home_data.dart';
+import 'package:aurawear/features/home/presentation/home_presentation.dart';
+import 'package:aurawear/core/router/index.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 class HomeBody extends StatefulWidget {
   const HomeBody({super.key});
   @override
   State<HomeBody> createState() => _HomeBodyState();
 }
+
 class _HomeBodyState extends State<HomeBody>
     with SingleTickerProviderStateMixin {
   late AnimationController _staggerController;
@@ -22,6 +23,7 @@ class _HomeBodyState extends State<HomeBody>
     );
     _staggerController.forward();
   }
+
   Animation<Offset> _getCartBarAnimation() {
     return Tween<Offset>(begin: const Offset(0, 2), end: Offset.zero).animate(
       CurvedAnimation(
@@ -30,11 +32,13 @@ class _HomeBodyState extends State<HomeBody>
       ),
     );
   }
+
   @override
   void dispose() {
     _staggerController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(

@@ -46,15 +46,15 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: false
-  image_path: "assets/icons/appIconwithbg.png"
+  image_path: "assets/icons/appIcon_1.png"
   web:
     generate: true
-    image_path: "assets/icons/appIconwithbg.png"
+    image_path: "assets/icons/appIcon_1.png"
     background_color: "#FFFFFF"
     theme_color: "#E35858"
   windows:
     generate: true
-    image_path: "assets/icons/appIconwithbg.png"
+    image_path: "assets/icons/appIcon_1.png"
     icon_size: 48
 flutter_native_splash:
   color: "#E35858"
