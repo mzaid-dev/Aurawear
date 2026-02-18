@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_frame/device_frame.dart';
@@ -16,7 +15,9 @@ class AurawearApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       routerConfig: router,
       builder: (context, child) {
-        if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+        if (!kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.android ||
+                defaultTargetPlatform == TargetPlatform.iOS)) {
           return child!;
         }
         final deviceFrame = DeviceFrame(
@@ -26,7 +27,9 @@ class AurawearApp extends StatelessWidget {
           screen: child!,
         );
         if (!kIsWeb &&
-            (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+            (defaultTargetPlatform == TargetPlatform.windows ||
+                defaultTargetPlatform == TargetPlatform.linux ||
+                defaultTargetPlatform == TargetPlatform.macOS)) {
           return DeviceSimulatorFrame(child: deviceFrame);
         }
         return deviceFrame;

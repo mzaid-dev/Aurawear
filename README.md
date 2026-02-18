@@ -6,6 +6,10 @@
   </a>
 
   <p>
+    <a href="https://mzaid-dev.github.io/Aurawear/"><img src="https://img.shields.io/badge/Live-Demo-02569B?style=social&logo=flutter&logoColor=02569B" alt="Live Demo" /></a>
+  </p>
+
+  <p>
     <a href="#"><img src="https://img.shields.io/badge/Flutter-3.10+-02569B?style=social&logo=flutter&logoColor=02569B" alt="Flutter" /></a>&nbsp;
     <a href="#"><img src="https://img.shields.io/badge/Dart-3.0+-0175C2?style=social&logo=dart&logoColor=0175C2" alt="Dart" /></a>&nbsp;
     <a href="#"><img src="https://img.shields.io/badge/License-MIT-4caf50?style=social&logo=opensourceinitiative&logoColor=4caf50" alt="License" /></a>
@@ -57,7 +61,7 @@ It is designed for developers and designers who want to explore **3D optimizatio
 <br>
 
 <div align="center">
-  <img src="assets/icons/appIconwithbg.png" alt="App Logo" width="150" style="border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);" />
+  <img src="assets/icons/appIcon_1.png" alt="App Logo" width="150" style="border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);" />
   <br>
   <i><b>Official App Icon</b></i>
 </div>

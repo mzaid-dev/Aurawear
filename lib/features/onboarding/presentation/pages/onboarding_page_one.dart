@@ -2,11 +2,13 @@ import 'package:aurawear/core/constants/app_assets.dart';
 import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:flutter/material.dart';
+
 class OnboardingPageOne extends StatefulWidget {
   const OnboardingPageOne({super.key});
   @override
   State<OnboardingPageOne> createState() => _OnboardingPageOneState();
 }
+
 class _OnboardingPageOneState extends State<OnboardingPageOne> {
   @override
   Widget build(BuildContext context) {

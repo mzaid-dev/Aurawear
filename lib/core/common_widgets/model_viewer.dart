@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:io' as io;
+import 'dart:math' as math;
 
-import 'package:aurawear/core/theme/index.dart';
-import 'package:aurawear/features/home/domain/home_domain.dart';
+import 'package:aurawear/core/theme/app_colors.dart';
+import 'package:aurawear/core/theme/text_styles.dart';
+import 'package:aurawear/features/home/domain/models/product.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:path_provider/path_provider.dart';
-
-
 
 class ModelViewerWidget extends StatefulWidget {
   final Product product;
@@ -19,223 +19,406 @@ class ModelViewerWidget extends StatefulWidget {
   State<ModelViewerWidget> createState() => _ModelViewerWidgetState();
 }
 
-class _ModelViewerWidgetState extends State<ModelViewerWidget> {
+class _ModelViewerWidgetState extends State<ModelViewerWidget>
+    with SingleTickerProviderStateMixin {
+  bool _isAutoRotate = true;
+  double _fov = 30;
+  late AnimationController _animationController;
+  late Animation<double> _expandAnimation;
+  bool _isMenuOpen = false;
   bool _isLoading = true;
   bool _hasError = false;
-  Timer? _timeoutTimer;
-
-
-  io.HttpServer? _server;
-  String? _localModelUrl;
+  String _errorMessage = '';
+  String? _localModelPath;
+  Timer? _loadingTimeout;
+  static const int _maxLoadingSeconds = 30;
 
   @override
   void initState() {
     super.initState();
-    _initViewer();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 350),
+      vsync: this,
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutBack,
+      reverseCurve: Curves.easeInBack,
+    );
+    _prepareModel();
+  }
+
+  Future<void> _prepareModel() async {
+    _loadingTimeout = Timer(Duration(seconds: _maxLoadingSeconds), () {
+      if (mounted && _isLoading) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+          _errorMessage =
+              'The 3D model took too long to load.\n'
+              'This could be due to a slow connection or limited device memory.\n'
+              'Please try again.';
+        });
+      }
+    });
+
+    final String assetPath =
+        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
+
+    if (kIsWeb) {
+      if (mounted) {
+        setState(() {
+          _localModelPath = assetPath;
+          _isLoading = false;
+        });
+        _loadingTimeout?.cancel();
+      }
+      return;
+    }
+
+    if (assetPath.startsWith('assets/')) {
+      try {
+        final byteData = await DefaultAssetBundle.of(context).load(assetPath);
+        final file = await _createTempFile(assetPath, byteData);
+
+        if (mounted) {
+          final String normalizedPath = file.path.replaceAll('\\', '/');
+          setState(() {
+            _localModelPath = 'file:///$normalizedPath';
+            _isLoading = false;
+          });
+          _loadingTimeout?.cancel();
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _localModelPath = assetPath;
+            _isLoading = false;
+          });
+          _loadingTimeout?.cancel();
+        }
+      }
+    } else {
+      if (mounted) {
+        setState(() {
+          _localModelPath = assetPath;
+          _isLoading = false;
+        });
+        _loadingTimeout?.cancel();
+      }
+    }
+  }
+
+  Future<io.File> _createTempFile(String name, ByteData data) async {
+    final directory = await getTemporaryDirectory();
+    final fileName = name.split('/').last;
+    final file = io.File('${directory.path}/$fileName');
+    await file.writeAsBytes(data.buffer.asUint8List(), flush: true);
+    return file;
   }
 
   @override
   void dispose() {
-    _timeoutTimer?.cancel();
-    _server?.close(force: true);
+    _loadingTimeout?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
-  Future<void> _initViewer() async {
-    _resetState();
-    try {
-      _startTimeout();
-      if (!kIsWeb && io.Platform.isWindows) {
-        await _setupWindowsServer();
-      }
-    } catch (e) {
-      debugPrint('3D Viewer Error: $e');
-      _setErrorState();
-    }
-  }
-
-  void _resetState() => setState(() {
-    _isLoading = true;
-    _hasError = false;
-  });
-
-  void _setErrorState() => setState(() {
-    _isLoading = false;
-    _hasError = true;
-  });
-
-  void _startTimeout() {
-    _timeoutTimer?.cancel();
-    _timeoutTimer = Timer(const Duration(seconds: 12), () {
-      if (mounted && _isLoading) {
-        _setErrorState();
+  void _toggleMenu() {
+    setState(() {
+      _isMenuOpen = !_isMenuOpen;
+      if (_isMenuOpen) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
       }
     });
   }
 
-  Future<void> _setupWindowsServer() async {
-    final assetPath =
-        widget.product.modelPath ?? 'assets/3d_models/headphone.glb';
-    final tempDir = await getTemporaryDirectory();
-    final tempFile = io.File('${tempDir.path}/${assetPath.split('/').last}');
-
-    final data = await rootBundle.load(assetPath);
-    await tempFile.writeAsBytes(
-      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-    );
-
-    _server = await io.HttpServer.bind(io.InternetAddress.loopbackIPv4, 0);
-    _server!.listen((request) async {
-      request.response.headers.add('Access-Control-Allow-Origin', '*');
-      request.response.headers.contentType = io.ContentType.parse(
-        'model/gltf-binary',
-      );
-      await tempFile.openRead().pipe(request.response);
+  void _zoomIn() {
+    setState(() {
+      _fov = (_fov - 5).clamp(10, 60).toDouble();
     });
+  }
 
-    if (mounted) {
-      setState(
-        () => _localModelUrl = 'http://localhost:${_server!.port}/model.glb',
-      );
-    }
+  void _zoomOut() {
+    setState(() {
+      _fov = (_fov + 5).clamp(10, 60).toDouble();
+    });
+  }
+
+  void _toggleAutoRotate() {
+    setState(() {
+      _isAutoRotate = !_isAutoRotate;
+    });
+  }
+
+  void _retryLoading() {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+      _errorMessage = '';
+      _localModelPath = null;
+    });
+    _prepareModel();
   }
 
   @override
   Widget build(BuildContext context) {
+    final String modelSrc =
+        _localModelPath ??
+        widget.product.modelPath ??
+        'assets/3d_models/headphone.glb';
+
+    final bool arEnabled = !kIsWeb && !io.Platform.isWindows;
+
     return Scaffold(
       backgroundColor: AppColors.homeBg,
       body: Stack(
         children: [
-          _buildMainContent(),
-          if (_isLoading && !_hasError) _buildLoadingOverlay(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMainContent() {
-    return SafeArea(
-      bottom: false,
-      child: Column(
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 18),
-          _buildViewerContainer(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Colors.black,
-              size: 20,
+          SafeArea(
+            bottom: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: AppColors.textBlack,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          widget.product.name,
+                          style: AppTextStyles.headlineLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(width: 48),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    decoration: const BoxDecoration(
+                      color: Color(0xffFFE7E4),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        if (!_isLoading && !_hasError)
+                          Center(
+                            child: ModelViewer(
+                              key: ValueKey(modelSrc),
+                              backgroundColor: Colors.transparent,
+                              src: modelSrc,
+                              alt: "A 3D model of ${widget.product.name}",
+                              autoRotate: _isAutoRotate,
+                              cameraControls: true,
+                              ar: arEnabled,
+                              autoPlay: true,
+                              disableZoom: false,
+                              fieldOfView: "${_fov}deg",
+                            ),
+                          ),
+                        if (_isLoading) _buildLoadingOverlay(),
+                        if (_hasError) _buildErrorScreen(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Text(
-            widget.product.name,
-            style: AppTextStyles.headlineLarge.copyWith(fontSize: 24),
-          ),
-          const SizedBox(width: 40), 
+          if (!_isLoading && !_hasError)
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  _buildCircularButton(
+                    index: 0,
+                    icon: Icons.zoom_in,
+                    onPressed: _zoomIn,
+                    tooltip: "Zoom In",
+                  ),
+                  _buildCircularButton(
+                    index: 1,
+                    icon: Icons.zoom_out,
+                    onPressed: _zoomOut,
+                    tooltip: "Zoom Out",
+                  ),
+                  _buildCircularButton(
+                    index: 2,
+                    icon: _isAutoRotate
+                        ? Icons.stop_circle
+                        : Icons.rotate_right,
+                    onPressed: _toggleAutoRotate,
+                    tooltip: _isAutoRotate ? "Stop Rotation" : "Auto Rotate",
+                  ),
+                  FloatingActionButton(
+                    heroTag: "main_fab",
+                    onPressed: _toggleMenu,
+                    backgroundColor: AppColors.primaryRose,
+                    elevation: 4,
+                    child: AnimatedRotation(
+                      turns: _isMenuOpen ? 0.125 : 0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Icon(
+                        _isMenuOpen ? Icons.add : Icons.settings_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
-    );
-  }
-
-  Widget _buildViewerContainer() {
-    final assetSrc = _getAssetSource();
-    if (_isWindowsWaiting) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          color: Color(0xffFFE7E4),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-        ),
-        child: _hasError ? _buildErrorState() : _buildModelViewer(assetSrc),
-      ),
-    );
-  }
-
-  String _getAssetSource() => (io.Platform.isWindows && _localModelUrl != null)
-      ? _localModelUrl!
-      : (widget.product.modelPath ?? "");
-
-  bool get _isWindowsWaiting =>
-      !kIsWeb && io.Platform.isWindows && _localModelUrl == null;
-
-  Widget _buildModelViewer(String src) {
-    if (src.isEmpty) {
-      return _buildErrorState();
-    }
-    return ModelViewer(
-      key: ValueKey(src),
-      src: src,
-      alt: "3D Model",
-      autoRotate: true,
-      cameraControls: true,
-      backgroundColor: Colors.transparent,
-      onWebViewCreated: (c) {
-        try {
-          (c as dynamic).addJavaScriptChannel(
-            'FlutterChannel',
-            onMessageReceived: (m) {
-              if (m.message == 'loaded' && mounted) {
-                setState(() => _isLoading = false);
-                _timeoutTimer?.cancel();
-              }
-            },
-          );
-        } catch (_) {}
-      },
-      relatedJs:
-          "document.querySelector('model-viewer')?.addEventListener('load', () => window.FlutterChannel?.postMessage('loaded'));",
     );
   }
 
   Widget _buildLoadingOverlay() {
-    return Positioned.fill(
-      top: 100, 
-      child: Container(
-        color: const Color(0xffFFE7E4),
-        child: const Center(
-          child: CircularProgressIndicator(color: AppColors.primaryRose),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: AppColors.primaryRose),
+          const SizedBox(height: 24),
+          Text(
+            "Loading 3D Model...",
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.primaryRose,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Preparing ${widget.product.name}",
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.primaryRose.withValues(alpha: 0.6),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorScreen() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.cloud_off_outlined,
+              size: 64,
+              color: AppColors.primaryRose,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Unable to Load Model",
+              style: AppTextStyles.headlineLarge.copyWith(
+                color: AppColors.primaryRose,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              _errorMessage,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.grey,
+                height: 1.5,
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 28),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back, size: 18),
+                  label: const Text("Go Back"),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primaryRose,
+                    side: const BorderSide(color: AppColors.primaryRose),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton.icon(
+                  onPressed: _retryLoading,
+                  icon: const Icon(Icons.refresh, size: 18),
+                  label: const Text("Retry"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryRose,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildErrorState() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.error_outline, size: 64, color: AppColors.primaryRose),
-        const SizedBox(height: 16),
-        const Text(
-          "Unable to load 3D model",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: _initViewer,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryRose,
-            foregroundColor: Colors.white,
+  Widget _buildCircularButton({
+    required int index,
+    required IconData icon,
+    required VoidCallback onPressed,
+    required String tooltip,
+  }) {
+    const double distance = 100.0;
+    final double angle = 180 + (index * 45);
+    final double radians = angle * math.pi / 180;
+
+    return AnimatedBuilder(
+      animation: _expandAnimation,
+      builder: (context, child) {
+        final double currentDistance = _expandAnimation.value * distance;
+        return Transform.translate(
+          offset: Offset(
+            math.cos(radians) * currentDistance,
+            math.sin(radians) * currentDistance,
           ),
-          child: const Text("Retry Connection"),
-        ),
-      ],
+          child: Opacity(
+            opacity: _expandAnimation.value.clamp(0.0, 1.0),
+            child: FloatingActionButton.small(
+              heroTag: "btn_$index",
+              onPressed: _isMenuOpen ? onPressed : null,
+              backgroundColor: Colors.white,
+              tooltip: tooltip,
+              elevation: _isMenuOpen ? 2 : 0,
+              child: Icon(icon, color: AppColors.primaryRose),
+            ),
+          ),
+        );
+      },
     );
   }
 }

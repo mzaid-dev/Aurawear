@@ -2,6 +2,7 @@ import 'package:aurawear/core/constants/app_assets.dart';
 import 'package:aurawear/core/theme/app_colors.dart';
 import 'package:aurawear/core/theme/text_styles.dart';
 import 'package:flutter/material.dart';
+
 class OnboardingPageTwo extends StatelessWidget {
   const OnboardingPageTwo({super.key});
   @override

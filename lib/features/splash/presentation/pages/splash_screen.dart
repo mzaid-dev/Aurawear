@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FlutterNativeSplash.remove();
+      if (!kIsWeb) FlutterNativeSplash.remove();
     });
     _mainController = AnimationController(
       vsync: this,
@@ -84,8 +84,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _startSequence() async {
-
-
     if (defaultTargetPlatform == TargetPlatform.android) {
       _mainController.value = 1.0;
 
